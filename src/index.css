@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FAFAFA;
+  --foreground: #111111;
+  --panel: #FFFFFF;
+  --top-notch: #F2F2F2;
+  --accent-orange: #FF5A2B;
+  --accent-violet: #6C5CE7;
+  --border-light: #EBEBEB;
+  --border-accent: #F1F5F9;
+  --text-primary: #111111;
+  --text-secondary: #888888;
+  
+  --radius-badge: 100px;
+  --radius-island: 50px;
+  --radius-panel: 16px;
+  --radius-input: 8px;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-panel: var(--panel);
+  --color-top-notch: var(--top-notch);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-violet: var(--accent-violet);
+  --color-border-light: var(--border-light);
+  --color-border-accent: var(--border-accent);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  
+  --radius-badge: var(--radius-badge);
+  --radius-island: var(--radius-island);
+  --radius-panel: var(--radius-panel);
+  --radius-input: var(--radius-input);
+
+  --font-sans: "Geist Sans", sans-serif;
+  --font-mono: "Geist Sans", sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border-light;
+    box-sizing: border-box;
+    font-weight: 400;
+  }
+  
+  body {
+    @apply bg-background text-text-primary antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+  }
+
+  h1, h2, h3, h4, h5, h6, b, strong, th,
+  .font-bold, .font-semibold, .font-medium, .font-bold-mono {
+    font-weight: 500 !important;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-foreground/10 rounded-full hover:bg-foreground/20;
+  }
+}
+
+/* Custom InspoAI CSS transitions and animations */
+.transition-sidebar {
+  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.glow-orange {
+  box-shadow: 0 0 12px rgba(255, 90, 43, 0.15);
+}
+
+.glow-violet {
+  box-shadow: 0 0 12px rgba(108, 92, 231, 0.15);
+}
