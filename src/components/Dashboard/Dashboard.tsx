@@ -74,14 +74,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
   }).length;
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 py-8 flex flex-col gap-6 animate-in-up">
+    <div className="w-full max-w-5xl mx-auto px-4 py-6 flex flex-col gap-5 animate-in-up">
 
       {/* ── KPI Stats Panel ─────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-sm">
         {/* Stat 1 — Total Declarations */}
-        <div className="p-6 border-b sm:border-b-0 sm:border-r border-[#E5E7EB] flex flex-col justify-between relative overflow-hidden">
+        <div className="p-5 border-b sm:border-b-0 sm:border-r border-[#E5E7EB] flex flex-col justify-between relative overflow-hidden">
           {/* Gold left accent bar */}
-          <div className="absolute left-0 top-6 bottom-6 w-[3px] bg-[#C9A84C] rounded-r-full" />
+          <div className="absolute left-0 top-5 bottom-5 w-[3px] bg-[#C9A84C] rounded-r-full" />
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] pl-4">Total Declarations</span>
             <TrendingUp className="w-3.5 h-3.5 text-[#C9A84C]" />
@@ -93,7 +93,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {/* Stat 2 — Average Speed */}
-        <div className="p-6 border-b sm:border-b-0 sm:border-r border-[#E5E7EB] flex flex-col justify-between relative overflow-hidden">
+        <div className="p-5 border-b sm:border-b-0 sm:border-r border-[#E5E7EB] flex flex-col justify-between relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Average Speed</span>
             <Zap className="w-3.5 h-3.5 text-[#0C2461]" />
@@ -104,7 +104,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {/* Stat 3 — Audit Warnings */}
-        <div className="p-6 flex flex-col justify-between relative overflow-hidden">
+        <div className="p-5 flex flex-col justify-between relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Audit Warnings Flagged</span>
             <Shield className="w-3.5 h-3.5 text-[#0A0A0A]" />
@@ -118,7 +118,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* ── Main grid ────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
         {/* Upload Zone */}
         <div className="md:col-span-1 flex flex-col gap-4">
@@ -129,7 +129,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               onDragLeave={handleDrag}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`flex-1 border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all min-h-[220px] ${
+              className={`flex-1 border-2 border-dashed rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition-all min-h-[195px] ${
                 isDragActive
                   ? 'border-[#C9A84C] bg-[#F0E2B6]/20'
                   : 'border-[#E5E7EB] hover:border-[#0C2461] hover:bg-[#0C2461]/5'
@@ -182,9 +182,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="md:col-span-2">
           <Card title="Declaration History" subtitle="Click to view and edit draft declarations">
             {declarations.length === 0 ? (
-              <div className="flex flex-col items-center justify-center text-center py-12 text-[#6B7280]">
-                <div className="w-14 h-14 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
-                  <FileText className="w-7 h-7 text-[#9CA3AF]" />
+              <div className="flex flex-col items-center justify-center text-center py-10 text-[#6B7280]">
+                <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
+                  <FileText className="w-6 h-6 text-[#9CA3AF]" />
                 </div>
                 <h4 className="text-sm font-semibold text-[#0A0A0A]">No declarations yet</h4>
                 <p className="text-xs max-w-[280px] mt-1 text-[#6B7280]">
