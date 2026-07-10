@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { UploadCloud, FileText, AlertCircle, Clock, Trash2, ArrowRight } from 'lucide-react';
+import { UploadCloud, FileText, AlertCircle, Clock, Trash2, ArrowRight, TrendingUp, Shield, Zap } from 'lucide-react';
 import { Card, Badge } from '../ui';
 import type { Declaration } from '../../lib/supabase';
 
@@ -26,11 +26,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setIsDragActive(true);
-    } else if (e.type === "dragleave") {
-      setIsDragActive(false);
-    }
+    if (e.type === 'dragenter' || e.type === 'dragover') setIsDragActive(true);
+    else if (e.type === 'dragleave') setIsDragActive(false);
   };
 
   const handleDrop = async (e: React.DragEvent) => {
@@ -38,32 +35,23 @@ export const Dashboard: React.FC<DashboardProps> = ({
     e.stopPropagation();
     setIsDragActive(false);
     setErrorMessage(null);
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      await processFile(file);
-    }
+    if (e.dataTransfer.files?.[0]) await processFile(e.dataTransfer.files[0]);
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setErrorMessage(null);
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      await processFile(file);
-    }
+    if (e.target.files?.[0]) await processFile(e.target.files[0]);
   };
 
   const processFile = async (file: File) => {
-    if (file.type !== "application/pdf") {
-      setErrorMessage("Please upload a PDF document (Commercial Invoice, Packing List, or B/L).");
+    if (file.type !== 'application/pdf') {
+      setErrorMessage('Please upload a PDF document (Commercial Invoice, Packing List, or B/L).');
       return;
     }
-
     if (file.size > 5 * 1024 * 1024) {
-      setErrorMessage("File exceeds the 5MB size limit.");
+      setErrorMessage('File exceeds the 5MB size limit.');
       return;
     }
-
     const localPdfUrl = URL.createObjectURL(file);
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -72,12 +60,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         const base64Data = (reader.result as string).split(',')[1];
         await onUpload(file.name, base64Data, localPdfUrl);
       } catch (err: any) {
-        setErrorMessage(err.message || "Failed to process file.");
+        setErrorMessage(err.message || 'Failed to process file.');
       }
     };
   };
 
-  // Stats calculation
+  // Stats
   const totalCount = declarations.length;
   const warningCount = declarations.filter(d => d.warnings && d.warnings.length > 0).length;
   const processedToday = declarations.filter(d => {
@@ -87,81 +75,103 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 py-8 flex flex-col gap-6 animate-in-up">
-      {/* KPI Stats Panel */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 bg-white border border-border-light rounded-xl overflow-hidden shadow-sm">
-        <div className="p-6 border-b sm:border-b-0 sm:border-r border-border-light flex flex-col justify-between">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary">Total Declarations</span>
-          <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl font-mono font-bold text-text-primary">{totalCount}</span>
-            <span className="text-xs text-green-500 font-semibold font-mono">+{processedToday} today</span>
+
+      {/* ── KPI Stats Panel ─────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-sm">
+        {/* Stat 1 — Total Declarations */}
+        <div className="p-6 border-b sm:border-b-0 sm:border-r border-[#E5E7EB] flex flex-col justify-between relative overflow-hidden">
+          {/* Gold left accent bar */}
+          <div className="absolute left-0 top-6 bottom-6 w-[3px] bg-[#C9A84C] rounded-r-full" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] pl-4">Total Declarations</span>
+            <TrendingUp className="w-3.5 h-3.5 text-[#C9A84C]" />
+          </div>
+          <div className="flex items-baseline gap-2 mt-3 pl-4">
+            <span className="text-3xl font-bold text-[#0A0A0A]">{totalCount}</span>
+            <span className="text-xs text-green-600 font-semibold">+{processedToday} today</span>
           </div>
         </div>
-        <div className="p-6 border-b sm:border-b-0 sm:border-r border-border-light flex flex-col justify-between">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary">Average Speed</span>
-          <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl font-mono font-bold text-text-primary">2.8s</span>
-            <span className="text-xs text-text-secondary font-mono">OpenAI 4o-mini</span>
+
+        {/* Stat 2 — Average Speed */}
+        <div className="p-6 border-b sm:border-b-0 sm:border-r border-[#E5E7EB] flex flex-col justify-between relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Average Speed</span>
+            <Zap className="w-3.5 h-3.5 text-[#0C2461]" />
+          </div>
+          <div className="flex items-baseline gap-2 mt-3">
+            <span className="text-3xl font-bold text-[#0A0A0A]">2.8s</span>
+            <span className="text-xs text-[#0C2461] font-semibold">AI Powered</span>
           </div>
         </div>
-        <div className="p-6 flex flex-col justify-between">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary">Audit Warnings Flagged</span>
-          <div className="flex items-baseline gap-2 mt-2">
-            <span className={`text-3xl font-mono font-bold ${warningCount > 0 ? 'text-accent-orange' : 'text-text-primary'}`}>{warningCount}</span>
-            <span className="text-xs text-text-secondary font-mono">auto-reconciled</span>
+
+        {/* Stat 3 — Audit Warnings */}
+        <div className="p-6 flex flex-col justify-between relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Audit Warnings Flagged</span>
+            <Shield className="w-3.5 h-3.5 text-[#0A0A0A]" />
+          </div>
+          <div className="flex items-baseline gap-2 mt-3">
+            <span className={`text-3xl font-bold ${warningCount > 0 ? 'text-amber-600' : 'text-[#0A0A0A]'}`}>
+              {warningCount}
+            </span>
           </div>
         </div>
       </div>
 
+      {/* ── Main grid ────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Upload Zone (Left Column) */}
+
+        {/* Upload Zone */}
         <div className="md:col-span-1 flex flex-col gap-4">
           <Card title="New Extraction" subtitle="Drag & drop invoice or Packing List">
-            <div 
+            <div
               onDragEnter={handleDrag}
               onDragOver={handleDrag}
               onDragLeave={handleDrag}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`flex-1 border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all min-h-[220px] ${
-                isDragActive 
-                  ? 'border-accent-orange bg-accent-orange/5' 
-                  : 'border-border-light hover:border-accent-violet hover:bg-accent-violet/5'
+              className={`flex-1 border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all min-h-[220px] ${
+                isDragActive
+                  ? 'border-[#C9A84C] bg-[#F0E2B6]/20'
+                  : 'border-[#E5E7EB] hover:border-[#0C2461] hover:bg-[#0C2461]/5'
               }`}
             >
-              <input 
+              <input
                 ref={fileInputRef}
-                type="file" 
-                className="hidden" 
+                type="file"
+                className="hidden"
                 accept="application/pdf"
                 onChange={handleFileChange}
                 disabled={isProcessing}
               />
-              
+
               {isProcessing ? (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-accent-violet/10 flex items-center justify-center text-accent-violet animate-spin">
-                    <Clock className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-full bg-[#0C2461]/10 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-[#0C2461] animate-spin" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-text-primary font-mono">Extracting Fields...</h4>
-                    <p className="text-xs text-text-secondary mt-1 max-w-[200px]">Converting invoice to Mirsal 2 structured schema</p>
+                    <h4 className="text-sm font-semibold text-[#0A0A0A]">Extracting Fields…</h4>
+                    <p className="text-xs text-[#6B7280] mt-1 max-w-[200px]">Converting invoice to Mirsal 2 structured schema</p>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-text-secondary">
+                  <div className="w-11 h-11 rounded-full bg-[#F3F4F6] flex items-center justify-center text-[#0C2461]">
                     <UploadCloud className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-text-primary">Upload Document</h4>
-                    <p className="text-xs text-text-secondary mt-1">PDF up to 5MB</p>
+                    <h4 className="text-sm font-semibold text-[#0A0A0A]">Upload Document</h4>
+                    <p className="text-xs text-[#6B7280] mt-1">PDF up to 5MB</p>
                   </div>
+                  {/* Gold accent */}
+                  <div className="w-8 h-[2px] bg-[#C9A84C] rounded-full mt-1" />
                 </div>
               )}
             </div>
 
             {errorMessage && (
-              <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex gap-2 text-xs text-red-600">
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex gap-2 text-xs text-red-700">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMessage}</span>
               </div>
@@ -169,60 +179,66 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </Card>
         </div>
 
-        {/* History Table (Right Column) */}
+        {/* History Table */}
         <div className="md:col-span-2">
           <Card title="Declaration History" subtitle="Click to view and edit draft declarations">
             {declarations.length === 0 ? (
-              <div className="flex flex-col items-center justify-center text-center py-12 text-text-secondary">
-                <FileText className="w-8 h-8 opacity-40 mb-2" />
-                <h4 className="text-sm font-semibold text-text-primary font-mono">No declarations yet</h4>
-                <p className="text-xs max-w-[280px] mt-1">Upload your first invoice PDF to start drafting customs entries.</p>
+              <div className="flex flex-col items-center justify-center text-center py-12 text-[#6B7280]">
+                <div className="w-14 h-14 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
+                  <FileText className="w-7 h-7 text-[#9CA3AF]" />
+                </div>
+                <h4 className="text-sm font-semibold text-[#0A0A0A]">No declarations yet</h4>
+                <p className="text-xs max-w-[280px] mt-1 text-[#6B7280]">
+                  Upload your first invoice PDF to start drafting customs entries.
+                </p>
+                {/* Gold rule */}
+                <div className="w-12 h-[2px] bg-[#C9A84C] rounded-full mt-4 opacity-60" />
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse font-sans">
+                <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-border-light">
-                      <th className="py-3 text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary">Document Name</th>
-                      <th className="py-3 text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary">Importer</th>
-                      <th className="py-3 text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary">CIF Value</th>
-                      <th className="py-3 text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary">Status</th>
-                      <th className="py-3 text-right"></th>
+                    <tr className="border-b border-[#E5E7EB]">
+                      <th className="py-3 text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Document Name</th>
+                      <th className="py-3 text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Importer</th>
+                      <th className="py-3 text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">CIF Value</th>
+                      <th className="py-3 text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Status</th>
+                      <th className="py-3 text-right" />
                     </tr>
                   </thead>
                   <tbody>
                     {declarations.map((dec) => {
                       const hasWarnings = dec.warnings && dec.warnings.length > 0;
                       return (
-                        <tr 
-                          key={dec.id} 
+                        <tr
+                          key={dec.id}
                           onClick={() => onSelect(dec.id)}
-                          className="border-b border-border-light hover:bg-background/60 cursor-pointer transition-all group"
+                          className="border-b border-[#F3F4F6] hover:bg-[#F7F7F7] cursor-pointer transition-all group sh-row"
                         >
-                          <td className="py-4 pr-3 max-w-[200px] truncate">
+                          <td className="py-4 pr-3 max-w-[200px]">
                             <div className="flex items-center gap-2">
-                              <FileText className="w-4 h-4 text-text-secondary shrink-0" />
-                              <span className="text-sm font-medium text-text-primary truncate">{dec.file_name}</span>
+                              <FileText className="w-4 h-4 text-[#0C2461] shrink-0" />
+                              <span className="text-sm font-medium text-[#0A0A0A] truncate">{dec.file_name}</span>
                             </div>
-                            <span className="text-[10px] text-text-secondary font-mono block mt-0.5">
+                            <span className="text-[10px] text-[#9CA3AF] block mt-0.5 pl-6">
                               {new Date(dec.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                             </span>
                           </td>
-                          <td className="py-4 text-sm text-text-primary">
+                          <td className="py-4 text-sm text-[#0A0A0A]">
                             {dec.extracted_header.consignee_name ? (
                               <span className="truncate block max-w-[150px]">{dec.extracted_header.consignee_name}</span>
                             ) : (
-                              <span className="text-text-secondary italic">Unknown</span>
+                              <span className="text-[#9CA3AF] italic">Unknown</span>
                             )}
                           </td>
-                          <td className="py-4 text-sm font-mono text-text-primary">
+                          <td className="py-4 text-sm font-mono text-[#0A0A0A]">
                             {dec.extracted_header.total_invoice_value ? (
                               <span>
                                 {dec.extracted_header.invoice_currency || 'USD'}{' '}
-                                {(dec.extracted_header.total_invoice_value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                {dec.extracted_header.total_invoice_value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </span>
                             ) : (
-                              <span className="text-text-secondary">-</span>
+                              <span className="text-[#9CA3AF]">—</span>
                             )}
                           </td>
                           <td className="py-4">
@@ -231,20 +247,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             ) : hasWarnings ? (
                               <Badge variant="warning">Warnings</Badge>
                             ) : (
-                              <Badge variant="success">Ready</Badge>
+                              <Badge variant="navy">Ready</Badge>
                             )}
                           </td>
                           <td className="py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex items-center justify-end gap-2">
-                              <button 
+                            <div className="flex items-center justify-end gap-1">
+                              <button
                                 onClick={() => onSelect(dec.id)}
-                                className="p-1.5 rounded hover:bg-border-accent text-text-secondary hover:text-accent-violet transition-all opacity-0 group-hover:opacity-100"
+                                className="p-1.5 rounded hover:bg-[#0C2461]/10 text-[#9CA3AF] hover:text-[#0C2461] transition-all opacity-0 group-hover:opacity-100"
                               >
                                 <ArrowRight className="w-4 h-4" />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => onDelete(dec.id)}
-                                className="p-1.5 rounded hover:bg-red-500/10 text-text-secondary hover:text-red-500 transition-all opacity-0 group-hover:opacity-100"
+                                className="p-1.5 rounded hover:bg-red-50 text-[#9CA3AF] hover:text-red-500 transition-all opacity-0 group-hover:opacity-100"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>

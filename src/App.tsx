@@ -3,8 +3,22 @@ import { db, type Declaration } from './lib/supabase';
 import { DynamicIsland } from './components/Navigation/DynamicIsland';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { EditorContainer } from './components/DeclarationEditor/EditorContainer';
+import { AuthGuard } from './components/Auth/AuthGuard';
 
 export default function App() {
+  return (
+    <AuthGuard>
+      {(user, signOut) => <MainApp user={user} onSignOut={signOut} />}
+    </AuthGuard>
+  );
+}
+
+interface MainAppProps {
+  user: { name?: string; email?: string; avatar?: string };
+  onSignOut: () => void;
+}
+
+function MainApp({ user, onSignOut }: MainAppProps) {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'editor'>('dashboard');
   const [declarations, setDeclarations] = useState<Declaration[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -31,7 +45,6 @@ export default function App() {
       let warningsList: string[] = [];
 
       try {
-        // Attempt to call the Vercel Serverless Function
         const response = await fetch('/api/extract', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -47,14 +60,12 @@ export default function App() {
         responseData = resJson.data;
         warningsList = resJson.warnings || [];
       } catch (apiErr) {
-        console.warn('Backend API unavailable, falling back to simulated extraction client-side:', apiErr);
-        
-        // Premium Fallback: Simulate extraction client-side so it works in any standalone build
+        console.warn('Backend API unavailable, falling back to simulated extraction:', apiErr);
+
         await new Promise(resolve => setTimeout(resolve, 3000));
-        
-        // Generate simulated response depending on invoice name
+
         const isEuro = fileName.toLowerCase().includes('hamburg') || fileName.toLowerCase().includes('europe');
-        
+
         responseData = {
           declaration_type: 'Import to Local',
           declaration_sub_type: 'Import to Local from Abroad',
@@ -73,8 +84,7 @@ export default function App() {
           port_of_discharge: 'AEJEA',
           bill_of_lading_no: 'OOLU2039847192'
         };
-        
-        // Simulated items list matching demo_customs_pack_v2.pdf
+
         responseData.line_items = isEuro ? [
           {
             item_no: 1,
@@ -136,11 +146,10 @@ export default function App() {
         ];
 
         if (responseData.delivery_term === 'FOB' && (responseData.freight_charges || 0) === 0) {
-          warningsList.push("Warning: Incoterm is FOB, but Freight Charges were not added on the customs invoice totals page.");
+          warningsList.push('Warning: Incoterm is FOB, but Freight Charges were not added on the customs invoice totals page.');
         }
       }
 
-      // Construct declaration db record
       const tempId = crypto.randomUUID();
       const newDec: Omit<Declaration, 'created_at' | 'updated_at'> = {
         id: tempId,
@@ -153,12 +162,9 @@ export default function App() {
       };
 
       const saved = await db.saveDeclaration(newDec);
-      
-      // Update local array state
       setDeclarations(prev => [saved, ...prev]);
       setSelectedId(saved.id);
       setActiveTab('editor');
-
     } catch (err: any) {
       console.error('Error during upload & extract:', err);
       throw err;
@@ -197,8 +203,11 @@ export default function App() {
   const activeDeclaration = declarations.find(d => d.id === selectedId);
 
   return (
-    <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans">
-      {/* Top Floating Dynamic Island Navigation */}
+    <div className="min-h-screen bg-[#F7F7F7] text-[#0A0A0A] flex flex-col font-sans">
+      {/* Top gold + navy brand strip */}
+      <div className="h-[2px] bg-gradient-to-r from-[#0C2461] via-[#C9A84C] to-[#0C2461]" />
+
+      {/* Navigation */}
       <DynamicIsland
         activeTab={activeTab}
         onNavigate={(tab) => {
@@ -208,9 +217,11 @@ export default function App() {
         hasActiveDeclaration={!!selectedId}
         isProcessing={isProcessing}
         processedCount={declarations.length}
+        user={user}
+        onSignOut={onSignOut}
       />
 
-      {/* Main View Area */}
+      {/* Main View */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {activeTab === 'dashboard' ? (
           <Dashboard

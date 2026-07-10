@@ -6,6 +6,10 @@ import {
 import { Button, Input, Badge } from '../ui';
 import type { Declaration } from '../../lib/supabase';
 
+// Navy + gold palette constants
+const NAVY = '#0C2461';
+const GOLD = '#C9A84C';
+
 interface EditorContainerProps {
   declaration: Declaration;
   onBack: () => void;
@@ -226,25 +230,25 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
       
       {/* 1. COLLAPSIBLE SIDEBAR (LEFT) */}
       <div 
-        className={`bg-panel border-r border-border-light flex flex-col transition-sidebar relative z-30 shrink-0 ${
+        className={`bg-white border-r border-[#E5E7EB] flex flex-col transition-sidebar relative z-30 shrink-0 ${
           sidebarCollapsed ? 'w-[60px]' : 'w-[420px]'
         }`}
       >
         {/* Toggle Button */}
         <button 
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="absolute -right-3 top-4 w-6 h-6 rounded-full border border-border-light bg-panel flex items-center justify-center text-text-secondary hover:text-text-primary shadow-sm hover:scale-105 z-40 transition-all cursor-pointer"
+          className="absolute -right-3 top-4 w-6 h-6 rounded-full border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:text-[#0A0A0A] shadow-sm hover:scale-105 z-40 transition-all cursor-pointer"
         >
           {sidebarCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
         </button>
 
         {sidebarCollapsed ? (
           <div className="flex flex-col items-center py-6 gap-6">
-            <button onClick={onBack} className="p-2 rounded-full hover:bg-background text-text-secondary hover:text-text-primary" title="Back">
+            <button onClick={onBack} className="p-2 rounded-full hover:bg-[#F3F4F6] text-[#6B7280] hover:text-[#0A0A0A]" title="Back">
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <div className="w-1px h-6 bg-border-light" />
-            <FileText className="w-5 h-5 text-accent-violet" />
+            <div className="w-px h-6 bg-[#E5E7EB]" />
+            <FileText className="w-5 h-5" style={{color: NAVY}} />
             {declaration.warnings.length > 0 && (
               <Badge variant="warning" className="w-5 h-5 flex items-center justify-center p-0 text-[10px]">
                 {declaration.warnings.length}
@@ -258,7 +262,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
             <div className="flex items-center justify-between">
               <button 
                 onClick={onBack}
-                className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary font-mono transition-colors"
+                className="flex items-center gap-1.5 text-xs font-semibold text-[#6B7280] hover:text-[#0A0A0A] transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" /> Back to Dashboard
               </button>
@@ -268,16 +272,16 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
             </div>
 
             {/* Document Details Card */}
-            <div className="bg-background border border-border-light rounded-xl p-4 flex flex-col gap-3">
+            <div className="bg-[#F7F7F7] border border-[#E5E7EB] rounded-xl p-4 flex flex-col gap-3">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-panel border border-border-light flex items-center justify-center text-accent-violet">
+                <div className="w-9 h-9 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center" style={{color: NAVY}}>
                   <FileText className="w-5 h-5" />
                 </div>
                 <div className="overflow-hidden">
-                  <h4 className="text-sm font-semibold text-text-primary truncate" title={declaration.file_name}>
+                  <h4 className="text-sm font-semibold text-[#0A0A0A] truncate" title={declaration.file_name}>
                     {declaration.file_name}
                   </h4>
-                  <p className="text-[10px] text-text-secondary font-mono mt-0.5">Uploaded {new Date(declaration.created_at).toLocaleTimeString()}</p>
+                  <p className="text-[10px] text-[#9CA3AF] mt-0.5">Uploaded {new Date(declaration.created_at).toLocaleTimeString()}</p>
                 </div>
               </div>
             </div>
@@ -285,11 +289,11 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
             {/* RLS Warnings Panel */}
             <div className="flex-1 flex flex-col min-h-0">
               <h5 className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary mb-3 flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5 text-accent-orange" /> Audit Warnings ({declaration.warnings.length})
+                <AlertTriangle className="w-3.5 h-3.5" style={{color: GOLD}} /> Audit Warnings ({declaration.warnings.length})
               </h5>
 
               {declaration.warnings.length === 0 ? (
-                <div className="bg-green-500/5 border border-green-500/20 rounded-xl p-4 flex gap-3 text-xs text-green-700">
+                <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex gap-3 text-xs text-green-700">
                   <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-green-600" />
                   <div>
                     <span className="font-semibold block font-mono">Declaration Validated</span>
@@ -309,14 +313,14 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
             </div>
 
             {/* Quick Switch Switcher */}
-            <div className="border-t border-border-light pt-4">
-              <h6 className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary mb-2">Switch Draft</h6>
+            <div className="border-t border-[#E5E7EB] pt-4">
+              <h6 className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] mb-2">Switch Draft</h6>
               <div className="flex flex-col gap-1.5 max-h-[140px] overflow-y-auto">
                 {declarationsList.filter(d => d.id !== declaration.id).slice(0, 3).map(d => (
                   <button 
                     key={d.id}
                     onClick={() => onSelectOther(d.id)}
-                    className="w-full text-left text-xs p-2 rounded-lg hover:bg-background border border-transparent hover:border-border-light text-text-secondary hover:text-text-primary transition-all truncate"
+                    className="w-full text-left text-xs p-2 rounded-lg hover:bg-[#F7F7F7] border border-transparent hover:border-[#E5E7EB] text-[#6B7280] hover:text-[#0A0A0A] transition-all truncate"
                   >
                     {d.file_name}
                   </button>
@@ -331,28 +335,28 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Workspace Toolbar */}
-        <div className="h-14 border-b border-border-light px-6 flex items-center justify-between bg-panel sticky top-0 z-20">
-          <div className="flex items-center gap-1.5 bg-background p-1 rounded-lg border border-border-light">
+        <div className="h-14 border-b border-[#E5E7EB] px-6 flex items-center justify-between bg-white sticky top-0 z-20">
+          <div className="flex items-center gap-1.5 bg-[#F3F4F6] p-1 rounded-lg border border-[#E5E7EB]">
             <button
               onClick={() => setActiveTab('pdf')}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold font-mono transition-all cursor-pointer ${
-                activeTab === 'pdf' ? 'bg-panel text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'pdf' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
               }`}
             >
               1. PDF Document
             </button>
             <button
               onClick={() => setActiveTab('header')}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold font-mono transition-all cursor-pointer ${
-                activeTab === 'header' ? 'bg-panel text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'header' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
               }`}
             >
               2. Declaration Header
             </button>
             <button
               onClick={() => setActiveTab('items')}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold font-mono transition-all cursor-pointer ${
-                activeTab === 'items' ? 'bg-panel text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'items' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
               }`}
             >
               3. Line Items ({items.length})
@@ -379,7 +383,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
             <Button variant="secondary" size="sm" onClick={handleExportCSV} className="gap-1.5">
               <Download className="w-4 h-4" /> Export CSV
             </Button>
-            <Button variant="outline" size="sm" onClick={handleExportXML} className="gap-1.5">
+            <Button variant="gold" size="sm" onClick={handleExportXML} className="gap-1.5">
               <FileCode className="w-4 h-4" /> Export XML
             </Button>
           </div>
@@ -391,10 +395,10 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
           {/* PDF Viewer (Left half) - Visible on lg screens, OR when activeTab is 'pdf' */}
           <div className={`${
             activeTab === 'pdf' ? 'flex w-full' : 'hidden lg:flex lg:w-[45%]'
-          } border-r border-border-light bg-[#EBEBEB]/40 flex-col p-4`}>
-            <div className="w-full h-full bg-white border border-border-light rounded-lg shadow-sm flex flex-col relative overflow-hidden">
-              <div className="h-10 bg-background border-b border-border-light px-4 flex items-center justify-between shrink-0">
-                <span className="text-xs font-semibold font-mono text-text-secondary truncate">{declaration.file_name}</span>
+          } border-r border-[#E5E7EB] bg-[#F3F4F6]/60 flex-col p-4`}>
+            <div className="w-full h-full bg-white border border-[#E5E7EB] rounded-lg shadow-sm flex flex-col relative overflow-hidden">
+              <div className="h-10 bg-[#F7F7F7] border-b border-[#E5E7EB] px-4 flex items-center justify-between shrink-0">
+                <span className="text-xs font-semibold text-[#6B7280] truncate">{declaration.file_name}</span>
                 <Badge variant="default" className="text-[9px]">ORIGINAL PDF</Badge>
               </div>
               <div className="flex-1">
@@ -405,9 +409,9 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     title="PDF Preview"
                   />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 text-text-secondary">
-                    <FileText className="w-12 h-12 text-accent-violet/40 mb-3 animate-pulse" />
-                    <h5 className="text-sm font-semibold text-text-primary font-mono">Invoice Preview Canvas</h5>
+                  <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 text-[#6B7280]">
+                    <FileText className="w-12 h-12 mb-3 animate-pulse" style={{color: `${NAVY}60`}} />
+                    <h5 className="text-sm font-semibold text-[#0A0A0A]">Invoice Preview Canvas</h5>
                     <p className="text-xs max-w-[200px] mt-1">Please re-upload your PDF file to preview it here.</p>
                   </div>
                 )}
@@ -419,11 +423,14 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
           <div className={`${activeTab === 'pdf' ? 'hidden lg:block' : 'block'} flex-1 overflow-y-auto p-6`}>
             {activeTab === 'header' ? (
               <div className="max-w-3xl mx-auto flex flex-col gap-6 animate-in-up">
-                <h3 className="text-sm font-bold uppercase tracking-wider font-mono text-text-secondary">
-                  Customs Declaration Header Fields (Mirsal 2)
-                </h3>
+                <div className="flex items-center gap-3">
+                  <div className="w-[3px] h-5 rounded-full" style={{background: GOLD}} />
+                  <h3 className="text-sm font-semibold uppercase tracking-widest text-[#6B7280]">
+                    Customs Declaration Header Fields (Mirsal 2)
+                  </h3>
+                </div>
                 
-                <div className="bg-panel border border-border-light rounded-xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
+                <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
                   <CopyInput 
                     id="decl_type" 
                     label="Declaration Type" 
@@ -462,7 +469,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                   />
                 </div>
 
-                <div className="bg-panel border border-border-light rounded-xl p-6 grid grid-cols-1 sm:grid-cols-3 gap-4 shadow-sm">
+                <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 grid grid-cols-1 sm:grid-cols-3 gap-4 shadow-sm">
                   <CopyInput 
                     id="inv_no" 
                     label="Commercial Invoice No" 
@@ -517,7 +524,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                   />
                 </div>
 
-                <div className="bg-panel border border-border-light rounded-xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
+                <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
                   <CopyInput 
                     id="port_load" 
                     label="Port of Loading" 
@@ -535,20 +542,23 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
             ) : (
               <div className="w-full flex flex-col gap-4 animate-in-up">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold uppercase tracking-wider font-mono text-text-secondary">
-                    Customs Invoice Items Worksheet
-                  </h3>
+                  <div className="flex items-center gap-3">
+                    <div className="w-[3px] h-5 rounded-full" style={{background: GOLD}} />
+                    <h3 className="text-sm font-semibold uppercase tracking-widest text-[#6B7280]">
+                      Customs Invoice Items Worksheet
+                    </h3>
+                  </div>
                   <Button variant="outline" size="sm" onClick={handleAddItem} className="gap-1 text-xs">
                     <Plus className="w-4 h-4" /> Add Row
                   </Button>
                 </div>
                 
                 {/* Spreadsheet grid */}
-                <div className="bg-panel border border-border-light rounded-xl overflow-hidden shadow-sm">
+                <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-sm">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[1000px]">
                       <thead>
-                        <tr className="border-b border-border-light bg-background/50 font-mono text-[9px] uppercase tracking-wider text-text-secondary">
+                        <tr className="border-b border-[#E5E7EB] bg-[#F7F7F7] text-[9px] uppercase tracking-widest text-[#6B7280]">
                           <th className="py-3 px-3 w-[50px]">No</th>
                           <th className="py-3 px-3 w-[140px]">HS Code</th>
                           <th className="py-3 px-3 min-w-[200px]">Description</th>
@@ -566,14 +576,14 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                       </thead>
                       <tbody>
                         {items.map((item, index) => (
-                          <tr key={index} className="border-b border-border-accent hover:bg-background/20 font-sans text-xs">
-                            <td className="py-2 px-3 font-mono font-bold text-text-secondary">{item.item_no}</td>
+                          <tr key={index} className="border-b border-[#F3F4F6] hover:bg-[#F9F9F9] text-xs">
+                            <td className="py-2 px-3 font-mono font-bold text-[#6B7280]">{item.item_no}</td>
                             <td className="py-2 px-2">
                               <input 
                                 type="text" 
                                 value={item.hs_code || ''} 
                                 onChange={(e) => handleItemChange(index, 'hs_code', e.target.value)}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded font-mono text-xs outline-none"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded font-mono text-xs outline-none"
                               />
                             </td>
                             <td className="py-2 px-2">
@@ -581,7 +591,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                                 type="text" 
                                 value={item.goods_description || ''} 
                                 onChange={(e) => handleItemChange(index, 'goods_description', e.target.value)}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded text-xs outline-none truncate"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded text-xs outline-none truncate"
                               />
                             </td>
                             <td className="py-2 px-2">
@@ -589,7 +599,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                                 type="number" 
                                 value={item.quantity} 
                                 onChange={(e) => handleItemChange(index, 'quantity', Number(e.target.value))}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded font-mono text-xs text-right outline-none"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded font-mono text-xs text-right outline-none"
                               />
                             </td>
                             <td className="py-2 px-2">
@@ -597,7 +607,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                                 type="text" 
                                 value={item.unit_of_quantity || ''} 
                                 onChange={(e) => handleItemChange(index, 'unit_of_quantity', e.target.value)}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded font-mono text-xs outline-none"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded font-mono text-xs outline-none"
                               />
                             </td>
                             <td className="py-2 px-2">
@@ -605,7 +615,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                                 type="text" 
                                 value={item.package_type || ''} 
                                 onChange={(e) => handleItemChange(index, 'package_type', e.target.value)}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded text-xs outline-none"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded text-xs outline-none"
                               />
                             </td>
                             <td className="py-2 px-2">
@@ -613,7 +623,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                                 type="number" 
                                 value={item.package_quantity} 
                                 onChange={(e) => handleItemChange(index, 'package_quantity', Number(e.target.value))}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded font-mono text-xs text-right outline-none"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded font-mono text-xs text-right outline-none"
                               />
                             </td>
                             <td className="py-2 px-2">
@@ -621,7 +631,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                                 type="number" 
                                 value={item.net_weight_kg} 
                                 onChange={(e) => handleItemChange(index, 'net_weight_kg', Number(e.target.value))}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded font-mono text-xs text-right outline-none"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded font-mono text-xs text-right outline-none"
                               />
                             </td>
                             <td className="py-2 px-2">
@@ -629,7 +639,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                                 type="number" 
                                 value={item.gross_weight_kg} 
                                 onChange={(e) => handleItemChange(index, 'gross_weight_kg', Number(e.target.value))}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded font-mono text-xs text-right outline-none"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded font-mono text-xs text-right outline-none"
                               />
                             </td>
                             <td className="py-2 px-2">
@@ -637,7 +647,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                                 type="text" 
                                 value={item.country_of_origin || ''} 
                                 onChange={(e) => handleItemChange(index, 'country_of_origin', e.target.value)}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded font-mono text-xs text-center outline-none"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded font-mono text-xs text-center outline-none"
                               />
                             </td>
                             <td className="py-2 px-2">
@@ -645,10 +655,10 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                                 type="number" 
                                 value={item.unit_price} 
                                 onChange={(e) => handleItemChange(index, 'unit_price', Number(e.target.value))}
-                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-border-light focus:border-accent-violet focus:bg-white rounded font-mono text-xs text-right outline-none"
+                                className="w-full px-1.5 py-1 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#0C2461] focus:bg-white rounded font-mono text-xs text-right outline-none"
                               />
                             </td>
-                            <td className="py-2 px-3 text-right font-mono font-bold text-text-primary">
+                            <td className="py-2 px-3 text-right font-mono font-bold text-[#0A0A0A]">
                               {(item.total_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </td>
                             <td className="py-2 px-2 text-right">

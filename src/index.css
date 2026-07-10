@@ -1,17 +1,31 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --background: #FAFAFA;
-  --foreground: #111111;
+  /* Base palette — white & black */
+  --background: #F7F7F7;
+  --foreground: #0A0A0A;
   --panel: #FFFFFF;
-  --top-notch: #F2F2F2;
-  --accent-orange: #FF5A2B;
-  --accent-violet: #6C5CE7;
-  --border-light: #EBEBEB;
-  --border-accent: #F1F5F9;
-  --text-primary: #111111;
-  --text-secondary: #888888;
-  
+  --top-notch: #FFFFFF;
+  --border-light: #E5E7EB;
+  --border-accent: #F3F4F6;
+  --text-primary: #0A0A0A;
+  --text-secondary: #6B7280;
+
+  /* Dubai Customs accent — deep navy & gold only */
+  --accent-navy: #0C2461;
+  --accent-gold: #C9A84C;
+  --accent-gold-light: #F0E2B6;
+
+  /* Status colours */
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-error: #DC2626;
+
+  /* Legacy aliases kept for component compat */
+  --accent-orange: #C9A84C;
+  --accent-violet: #0C2461;
+
   --radius-badge: 100px;
   --radius-island: 50px;
   --radius-panel: 16px;
@@ -25,58 +39,115 @@
   --color-top-notch: var(--top-notch);
   --color-accent-orange: var(--accent-orange);
   --color-accent-violet: var(--accent-violet);
+  --color-accent-navy: var(--accent-navy);
+  --color-accent-gold: var(--accent-gold);
+  --color-accent-gold-light: var(--accent-gold-light);
   --color-border-light: var(--border-light);
   --color-border-accent: var(--border-accent);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
-  
+
   --radius-badge: var(--radius-badge);
   --radius-island: var(--radius-island);
   --radius-panel: var(--radius-panel);
   --radius-input: var(--radius-input);
 
-  --font-sans: "Geist Sans", sans-serif;
-  --font-mono: "Geist Sans", sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "Inter", monospace;
 }
 
 @layer base {
   * {
-    @apply border-border-light;
     box-sizing: border-box;
     font-weight: 400;
-  }
-  
-  body {
-    @apply bg-background text-text-primary antialiased;
-    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+    border-color: var(--border-light);
   }
 
-  h1, h2, h3, h4, h5, h6, b, strong, th,
-  .font-bold, .font-semibold, .font-medium, .font-bold-mono {
-    font-weight: 500 !important;
+  body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6, b, strong, th {
+    font-weight: 600 !important;
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-foreground/10 rounded-full hover:bg-foreground/20;
+    background: #D1D5DB;
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #9CA3AF;
   }
 }
 
-/* Custom InspoAI CSS transitions and animations */
+/* ─── Animations ─────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.animate-in-up {
+  animation: fadeUp 0.3s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+/* ─── Dubai Customs Glow Utilities ───────────────────── */
+.glow-gold {
+  box-shadow: 0 0 16px rgba(201, 168, 76, 0.2);
+}
+
+.glow-navy {
+  box-shadow: 0 0 16px rgba(12, 36, 97, 0.15);
+}
+
+/* legacy aliases */
+.glow-orange { box-shadow: 0 0 12px rgba(201, 168, 76, 0.15); }
+.glow-violet { box-shadow: 0 0 12px rgba(12, 36, 97, 0.12); }
+
+/* ─── Gold accent bar ─────────────────────────────────── */
+.gold-bar {
+  width: 32px;
+  height: 2px;
+  background: var(--accent-gold);
+  border-radius: 2px;
+}
+
+/* ─── Sidebar transition ─────────────────────────────── */
 .transition-sidebar {
   transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.glow-orange {
-  box-shadow: 0 0 12px rgba(255, 90, 43, 0.15);
+/* ─── Table hover accent ─────────────────────────────── */
+tr.sh-row:hover td {
+  background: #FAFAFA;
 }
 
-.glow-violet {
-  box-shadow: 0 0 12px rgba(108, 92, 231, 0.15);
+/* ─── Focus ring ─────────────────────────────────────── */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-navy) !important;
+  box-shadow: 0 0 0 2px rgba(12, 36, 97, 0.12);
 }

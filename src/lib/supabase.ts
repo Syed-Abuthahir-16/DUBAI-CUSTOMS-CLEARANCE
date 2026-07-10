@@ -16,6 +16,19 @@ export const supabaseClient = !isMockMode
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
+// Alias export so Auth components can import { supabase }
+// When in mock mode, provide a stub with auth methods that do nothing
+export const supabase = !isMockMode && supabaseClient
+  ? supabaseClient
+  : {
+      auth: {
+        getSession: async () => ({ data: { session: null }, error: null }),
+        signInWithOAuth: async (_opts: any) => { throw new Error('not configured'); },
+        signOut: async () => {},
+        onAuthStateChange: (_cb: any) => ({ data: { subscription: { unsubscribe: () => {} } } })
+      }
+    } as any;
+
 // Mock database type definitions
 export interface Declaration {
   id: string;
