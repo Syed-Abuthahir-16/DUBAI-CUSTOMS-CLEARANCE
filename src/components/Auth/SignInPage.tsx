@@ -20,14 +20,15 @@ const SmartHandlingLogo: React.FC = () => (
         return <line key={deg} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#C9A84C" strokeWidth={deg % 90 === 0 ? 1.5 : 1} strokeLinecap="round" />;
       })}
       {/* SH lettermark */}
-      <text x="36" y="44" textAnchor="middle" fontFamily="Inter, sans-serif" fontWeight="800" fontSize="24" fill="#0C2461" letterSpacing="-1">SH</text>
+      <circle cx="36" cy="36" r="24" fill="white" opacity="0.1" />
+      <text x="36" y="44" textAnchor="middle" fontFamily="Inter, sans-serif" fontWeight="800" fontSize="24" fill="#C9A84C" letterSpacing="-1">SH</text>
     </svg>
     <div className="text-center">
-      <h1 className="text-2xl font-bold text-[#0A0A0A] tracking-tight">
-        Smart <span className="text-[#0C2461]">Handling</span>
+      <h1 className="text-2xl font-bold text-white tracking-tight animate-fade-in">
+        Smart <span className="text-[#C9A84C]">Handling</span>
       </h1>
       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent my-2" />
-      <p className="text-[11px] uppercase tracking-widest text-[#C9A84C] font-semibold">
+      <p className="text-[11px] uppercase tracking-widest text-[#F3F4F6]/80 font-semibold">
         Intelligent Customs Declaration
       </p>
     </div>
@@ -58,7 +59,7 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
     // Check if Supabase is configured first
     if (!import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('your-supabase')) {
       setIsLoading(false);
-      setError('Google Sign-In requires Supabase configuration. Use "Continue as Demo" below to test the app, or set up Supabase in your .env file.');
+      setError('Google Sign-In requires Supabase credentials. Please set up VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your local .env file and restart your npm dev server.');
       return;
     }
 
