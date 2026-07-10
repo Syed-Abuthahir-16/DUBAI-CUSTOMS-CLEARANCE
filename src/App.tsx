@@ -207,7 +207,6 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       {/* Top gold + navy brand strip */}
       <div className="h-[2px] bg-gradient-to-r from-[#0C2461] via-[#C9A84C] to-[#0C2461]" />
 
-      {/* Navigation */}
       <DynamicIsland
         activeTab={activeTab}
         onNavigate={(tab) => {
@@ -215,8 +214,6 @@ function MainApp({ user, onSignOut }: MainAppProps) {
           setActiveTab(tab);
         }}
         hasActiveDeclaration={!!selectedId}
-        isProcessing={isProcessing}
-        processedCount={declarations.length}
         user={user}
         onSignOut={onSignOut}
       />

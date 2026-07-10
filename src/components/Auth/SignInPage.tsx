@@ -45,10 +45,9 @@ const GoogleIcon = () => (
 );
 
 interface SignInPageProps {
-  onSignIn: () => void;
 }
 
-export const SignInPage: React.FC<SignInPageProps> = ({ onSignIn }) => {
+export const SignInPage: React.FC<SignInPageProps> = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,15 +79,7 @@ export const SignInPage: React.FC<SignInPageProps> = ({ onSignIn }) => {
     }
   };
 
-  // Demo bypass for local development (when Supabase is not configured)
-  const handleDemoAccess = () => {
-    localStorage.setItem('sh_demo_user', JSON.stringify({
-      name: 'Demo User',
-      email: 'demo@smarthandling.ai',
-      avatar: null
-    }));
-    onSignIn();
-  };
+
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -133,21 +124,6 @@ export const SignInPage: React.FC<SignInPageProps> = ({ onSignIn }) => {
               Continue with Google
             </button>
 
-            {/* Divider */}
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-[#E5E7EB]" />
-              <span className="text-[10px] text-[#9CA3AF] uppercase tracking-widest">or</span>
-              <div className="flex-1 h-px bg-[#E5E7EB]" />
-            </div>
-
-            {/* Demo access */}
-            <button
-              id="demo-access-btn"
-              onClick={handleDemoAccess}
-              className="w-full h-12 px-6 border border-[#C9A84C] rounded-xl text-[#92650A] font-medium text-sm hover:bg-[#F0E2B6]/30 transition-all"
-            >
-              ✦ Continue as Demo User
-            </button>
 
             <p className="text-[10px] text-center text-[#9CA3AF] leading-relaxed">
               By signing in you agree to our Terms of Service.<br />

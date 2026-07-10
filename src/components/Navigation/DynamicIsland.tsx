@@ -5,8 +5,6 @@ interface DynamicIslandProps {
   activeTab: 'dashboard' | 'editor';
   onNavigate: (tab: 'dashboard' | 'editor') => void;
   hasActiveDeclaration: boolean;
-  isProcessing: boolean;
-  processedCount: number;
   user?: { name?: string; email?: string; avatar?: string } | null;
   onSignOut?: () => void;
 }
@@ -34,8 +32,6 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
   activeTab,
   onNavigate,
   hasActiveDeclaration,
-  isProcessing,
-  processedCount,
   user,
   onSignOut,
 }) => {
@@ -59,23 +55,6 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
               Intelligent Customs
             </span>
           </div>
-        </div>
-
-        {/* Status Widget */}
-        <div className="hidden sm:flex items-center gap-2.5 px-4 py-1.5 bg-[#F7F7F7] border border-[#E5E7EB] rounded-full text-xs">
-          {isProcessing ? (
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#C9A84C] animate-pulse" />
-              <span className="text-[#0C2461] font-semibold">Extracting fields…</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 text-[#6B7280]">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-              <span>System Ready</span>
-              <span className="text-[#E5E7EB]">|</span>
-              <span className="font-semibold text-[#0A0A0A]">{processedCount} drafts prepared</span>
-            </div>
-          )}
         </div>
 
         {/* Right side: tabs + user avatar */}

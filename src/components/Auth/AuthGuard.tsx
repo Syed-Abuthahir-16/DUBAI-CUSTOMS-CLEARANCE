@@ -62,13 +62,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleSignIn = () => {
-    // Re-check session / demo user after sign-in
-    const demoUser = localStorage.getItem('sh_demo_user');
-    if (demoUser) {
-      try { setUser(JSON.parse(demoUser)); } catch { /* ignore */ }
-    }
-  };
+
 
   const handleSignOut = async () => {
     try { await supabase.auth.signOut(); } catch { /* ignore */ }
@@ -88,7 +82,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   }
 
   if (!user) {
-    return <SignInPage onSignIn={handleSignIn} />;
+    return <SignInPage />;
   }
 
   return <>{children(user, handleSignOut)}</>;
