@@ -100,7 +100,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
           <div className="flex items-baseline gap-2 mt-3">
             <span className="text-3xl font-bold text-[#0A0A0A]">2.8s</span>
-            <span className="text-xs text-[#0C2461] font-semibold">AI Powered</span>
           </div>
         </div>
 

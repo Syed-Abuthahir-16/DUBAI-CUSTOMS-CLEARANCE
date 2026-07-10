@@ -56,6 +56,13 @@ export const SignInPage: React.FC<SignInPageProps> = ({ onSignIn }) => {
     setIsLoading(true);
     setError(null);
 
+    // Check if Supabase is configured first
+    if (!import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('your-supabase')) {
+      setIsLoading(false);
+      setError('Google Sign-In requires Supabase configuration. Use "Continue as Demo" below to test the app, or set up Supabase in your .env file.');
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -64,21 +71,10 @@ export const SignInPage: React.FC<SignInPageProps> = ({ onSignIn }) => {
         }
       });
       if (error) throw error;
-      // OAuth redirects the page, so nothing to do here
+      // OAuth redirects the page — nothing more to do here
     } catch (err: any) {
       console.error('Sign-in error:', err);
-      // If Supabase is not configured, use demo bypass for dev
-      if (err?.message?.includes('not configured') || err?.message?.includes('invalid') || !import.meta.env.VITE_SUPABASE_URL) {
-        // Demo mode: bypass auth for local development
-        localStorage.setItem('sh_demo_user', JSON.stringify({
-          name: 'Demo User',
-          email: 'demo@smarthandling.ai',
-          avatar: null
-        }));
-        onSignIn();
-      } else {
-        setError('Sign-in failed. Please check your Supabase configuration.');
-      }
+      setError('Google Sign-In failed: ' + (err?.message || 'Unknown error. Please try again.'));
     } finally {
       setIsLoading(false);
     }
