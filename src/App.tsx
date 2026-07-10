@@ -200,6 +200,17 @@ function MainApp({ user, onSignOut }: MainAppProps) {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      if (user) {
+        await db.deleteAccountAndLog(user.email || 'unknown', user.name || 'Unknown User');
+      }
+      onSignOut();
+    } catch (err) {
+      console.error('Failed to delete account:', err);
+    }
+  };
+
   const activeDeclaration = declarations.find(d => d.id === selectedId);
 
   return (
@@ -216,6 +227,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
         hasActiveDeclaration={!!selectedId}
         user={user}
         onSignOut={onSignOut}
+        onDeleteAccount={handleDeleteAccount}
       />
 
       {/* Main View */}

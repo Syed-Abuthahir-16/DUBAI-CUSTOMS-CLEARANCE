@@ -1,5 +1,5 @@
-import React from 'react';
-import { Layers } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Layers, LogOut, Trash2, ChevronDown } from 'lucide-react';
 
 interface DynamicIslandProps {
   activeTab: 'dashboard' | 'editor';
@@ -7,6 +7,7 @@ interface DynamicIslandProps {
   hasActiveDeclaration: boolean;
   user?: { name?: string; email?: string; avatar?: string } | null;
   onSignOut?: () => void;
+  onDeleteAccount?: () => void;
 }
 
 // Smart Handling SVG Logo Mark
@@ -34,31 +35,95 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
   hasActiveDeclaration,
   user,
   onSignOut,
+  onDeleteAccount,
 }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <div className="w-full px-4 pt-4 flex justify-center z-50">
       <div
-        className="w-full max-w-5xl h-[56px] bg-white border border-[#E5E7EB] rounded-full px-5 py-1.5 flex items-center justify-between shadow-sm transition-all"
-        style={{ borderRadius: '50px' }}
+        className="w-full max-w-5xl bg-white border border-[#E5E7EB] px-5 py-3 md:py-1.5 flex flex-col md:flex-row items-center justify-between shadow-sm transition-all gap-3 md:gap-0 rounded-2xl md:rounded-full relative"
       >
-        {/* Brand */}
-        <div
-          className="flex items-center gap-2.5 cursor-pointer select-none"
-          onClick={() => onNavigate('dashboard')}
-        >
-          <SmartHandlingMark size={28} />
-          <div className="flex flex-col leading-tight">
-            <span className="text-[13px] font-bold tracking-tight text-[#0A0A0A]">
-              Smart <span className="text-[#0C2461]">Handling</span>
-            </span>
-            <span className="text-[9px] text-[#C9A84C] uppercase tracking-widest font-semibold hidden sm:block">
-              Intelligent Customs
-            </span>
+        {/* Brand Row (On mobile, we space between brand and profile trigger) */}
+        <div className="flex items-center justify-between w-full md:w-auto">
+          <div
+            className="flex items-center gap-2.5 cursor-pointer select-none"
+            onClick={() => onNavigate('dashboard')}
+          >
+            <SmartHandlingMark size={28} />
+            <div className="flex flex-col leading-tight">
+              <span className="text-[13px] font-bold tracking-tight text-[#0A0A0A]">
+                Smart <span className="text-[#0C2461]">Handling</span>
+              </span>
+              <span className="text-[9px] text-[#C9A84C] uppercase tracking-widest font-semibold">
+                Intelligent Customs
+              </span>
+            </div>
           </div>
+
+          {/* User profile trigger (Mobile only - visible on right) */}
+          {user && (
+            <div className="md:hidden relative" ref={dropdownRef}>
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="flex items-center gap-1.5 p-1 rounded-full border border-[#E5E7EB] hover:border-[#0A0A0A] bg-white transition-all"
+              >
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name || 'User'} className="w-6 h-6 rounded-full object-cover" />
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-[#0C2461] flex items-center justify-center text-white text-[10px] font-bold">
+                    {(user.name || user.email || 'U')[0].toUpperCase()}
+                  </div>
+                )}
+                <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
+              {showDropdown && (
+                <div className="absolute right-0 top-10 mt-1 w-44 bg-white border border-[#E5E7EB] rounded-xl shadow-lg py-1 z-50">
+                  <div className="px-3 py-1.5 border-b border-[#F3F4F6] mb-1">
+                    <p className="text-[11px] font-semibold text-[#0A0A0A] truncate">{user.name || 'User'}</p>
+                    <p className="text-[9px] text-[#6B7280] truncate">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowDropdown(false);
+                      onSignOut?.();
+                    }}
+                    className="w-full flex items-center gap-2 text-left px-3 py-1.5 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] transition-colors"
+                  >
+                    <LogOut className="w-3.5 h-3.5" /> Sign Out
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowDropdown(false);
+                      if (confirm("Are you sure you want to delete your account? This will permanently erase all your customs declarations and history.")) {
+                        onDeleteAccount?.();
+                      }
+                    }}
+                    className="w-full flex items-center gap-2 text-left px-3 py-1.5 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> Delete Account
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Right side: tabs + user avatar */}
-        <div className="flex items-center gap-2">
+        {/* Sub-navigation Row (Tabs + Profile on desktop) */}
+        <div className="flex items-center gap-2 w-full md:w-auto justify-center md:justify-end border-t border-[#F3F4F6] pt-2.5 md:border-t-0 md:pt-0">
           <button
             onClick={() => onNavigate('dashboard')}
             className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
@@ -84,13 +149,12 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
             </button>
           )}
 
-          {/* User avatar / sign-in indicator */}
-          {user ? (
-            <div className="flex items-center gap-2 ml-1">
+          {/* Desktop User profile block */}
+          {user && (
+            <div className="hidden md:block relative" ref={dropdownRef}>
               <button
-                onClick={onSignOut}
-                className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-[#E5E7EB] hover:border-[#0A0A0A] transition-all group"
-                title="Sign out"
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-[#E5E7EB] hover:border-[#0A0A0A] bg-white transition-all cursor-pointer"
               >
                 {user.avatar ? (
                   <img src={user.avatar} alt={user.name || 'User'} className="w-6 h-6 rounded-full object-cover" />
@@ -99,12 +163,42 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                     {(user.name || user.email || 'U')[0].toUpperCase()}
                   </div>
                 )}
-                <span className="text-[11px] text-[#6B7280] group-hover:text-[#0A0A0A] max-w-[80px] truncate hidden sm:block">
+                <span className="text-[11px] text-[#6B7280] font-semibold max-w-[80px] truncate">
                   {user.name || user.email}
                 </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
               </button>
+
+              {showDropdown && (
+                <div className="absolute right-0 top-10 mt-1 w-44 bg-white border border-[#E5E7EB] rounded-xl shadow-lg py-1 z-50">
+                  <div className="px-3 py-1.5 border-b border-[#F3F4F6] mb-1">
+                    <p className="text-[11px] font-semibold text-[#0A0A0A] truncate">{user.name || 'User'}</p>
+                    <p className="text-[9px] text-[#6B7280] truncate">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowDropdown(false);
+                      onSignOut?.();
+                    }}
+                    className="w-full flex items-center gap-2 text-left px-3 py-1.5 text-xs font-semibold text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" /> Sign Out
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowDropdown(false);
+                      if (confirm("Are you sure you want to delete your account? This will permanently erase all your customs declarations and history.")) {
+                        onDeleteAccount?.();
+                      }
+                    }}
+                    className="w-full flex items-center gap-2 text-left px-3 py-1.5 text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> Delete Account
+                  </button>
+                </div>
+              )}
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

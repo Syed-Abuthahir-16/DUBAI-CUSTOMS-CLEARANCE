@@ -161,5 +161,31 @@ export const db = {
       .eq('id', id);
       
     if (error) throw error;
+  },
+
+  async deleteAccountAndLog(email: string, name: string): Promise<void> {
+    if (isMockMode) {
+      localStorage.removeItem(MOCK_STORAGE_KEY);
+      return;
+    }
+
+    // 1. Insert deletion log
+    const { error: logError } = await supabaseClient!
+      .from('deletion_logs')
+      .insert({
+        user_email: email,
+        user_name: name
+      });
+    if (logError) console.error('Failed to log deletion:', logError);
+
+    // 2. Delete all declarations for current user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { error: deleteError } = await supabaseClient!
+        .from('declarations')
+        .delete()
+        .eq('user_id', user.id);
+      if (deleteError) throw deleteError;
+    }
   }
 };
