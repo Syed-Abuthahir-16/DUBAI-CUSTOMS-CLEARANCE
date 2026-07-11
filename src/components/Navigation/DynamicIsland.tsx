@@ -38,12 +38,16 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
   onDeleteAccount,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
+  const desktopDropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      const clickedOutsideMobile = !mobileDropdownRef.current || !mobileDropdownRef.current.contains(event.target as Node);
+      const clickedOutsideDesktop = !desktopDropdownRef.current || !desktopDropdownRef.current.contains(event.target as Node);
+      
+      if (clickedOutsideMobile && clickedOutsideDesktop) {
         setShowDropdown(false);
       }
     }
@@ -80,7 +84,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 
           {/* User profile trigger (Mobile only - visible on right) */}
           {user && (
-            <div className="md:hidden relative" ref={dropdownRef}>
+            <div className="md:hidden relative" ref={mobileDropdownRef}>
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 className="flex items-center gap-1.5 p-1 rounded-full border border-[#E5E7EB] hover:border-[#0A0A0A] bg-white transition-all"
@@ -156,7 +160,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 
           {/* Desktop User profile block */}
           {user && (
-            <div className="hidden md:block relative" ref={dropdownRef}>
+            <div className="hidden md:block relative" ref={desktopDropdownRef}>
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-[#E5E7EB] hover:border-[#0A0A0A] bg-white transition-all cursor-pointer"
