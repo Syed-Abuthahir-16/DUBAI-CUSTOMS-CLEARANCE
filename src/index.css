@@ -108,12 +108,40 @@
   100% { background-position:  200% 0; }
 }
 
+@keyframes kenBurns {
+  0% { transform: scale(1.02) translate(0, 0); }
+  50% { transform: scale(1.08) translate(-1%, -0.5%); }
+  100% { transform: scale(1.02) translate(0, 0); }
+}
+
+@keyframes slideCloudsSlow {
+  0% { transform: translateX(-100vw); }
+  100% { transform: translateX(100vw); }
+}
+
+@keyframes slideCloudsFast {
+  0% { transform: translateX(100vw); }
+  100% { transform: translateX(-100vw); }
+}
+
 .animate-in-up {
   animation: fadeUp 0.3s ease forwards;
 }
 
 .animate-fade-in {
   animation: fadeIn 0.4s ease forwards;
+}
+
+.animate-bg-motion {
+  animation: kenBurns 45s ease-in-out infinite;
+}
+
+.animate-clouds-slow {
+  animation: slideCloudsSlow 140s linear infinite;
+}
+
+.animate-clouds-fast {
+  animation: slideCloudsFast 100s linear infinite;
 }
 
 /* ─── Dubai Customs Glow Utilities ───────────────────── */

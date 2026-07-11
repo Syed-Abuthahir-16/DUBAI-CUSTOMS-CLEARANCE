@@ -89,12 +89,18 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
 
   return (
     <div className="min-h-screen bg-[#061129] flex flex-col relative overflow-hidden">
-      {/* 25% Opacity Background Image of Dubai Cargo Port */}
+      {/* 25% Opacity Background Image of Dubai Cargo Port with active Ken Burns camera drift */}
       <div 
-        className="absolute inset-0 bg-cover bg-center z-0 opacity-25" 
+        className="absolute inset-0 bg-cover bg-center z-0 opacity-25 animate-bg-motion" 
         style={{ backgroundImage: "url('/dubai_cargo_port.png')" }}
       />
       
+      {/* Slow Drifting Cloud Overlay Layer 1 */}
+      <div className="absolute top-10 left-0 right-0 h-40 bg-gradient-to-b from-white/10 to-transparent opacity-10 pointer-events-none blur-3xl z-1 animate-clouds-slow" />
+      
+      {/* Drifting Cloud Layer 2 (Opposite direction) */}
+      <div className="absolute top-32 left-0 right-0 h-48 bg-gradient-to-b from-white/5 to-transparent opacity-5 pointer-events-none blur-2xl z-1 animate-clouds-fast" />
+
       {/* Ambient Radial Gradient for premium glow */}
       <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#061129]/70 to-[#061129] z-5 pointer-events-none" />
 
