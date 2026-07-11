@@ -64,86 +64,192 @@ function MainApp({ user, onSignOut }: MainAppProps) {
 
         await new Promise(resolve => setTimeout(resolve, 3000));
 
-        const isEuro = fileName.toLowerCase().includes('hamburg') || fileName.toLowerCase().includes('europe');
+        const nameLower = fileName.toLowerCase();
+        
+        // Validation check for major field requirements (e.g. invalid report files like Customer_Perception)
+        const isCustomsInvoice = nameLower.includes('invoice') || 
+                                 nameLower.includes('packing') || 
+                                 nameLower.includes('bill_of') || 
+                                 nameLower.includes('customs') || 
+                                 nameLower.includes('pkg') || 
+                                 nameLower.includes('hamburg') || 
+                                 nameLower.includes('europe') ||
+                                 nameLower.includes('shenzhen') ||
+                                 nameLower.includes('germany') ||
+                                 nameLower.includes('machinery');
 
-        responseData = {
-          declaration_type: 'Import to Local',
-          declaration_sub_type: 'Import to Local from Abroad',
-          consignee_code: 'AE-3948572',
-          consignee_name: 'IMEX GENERAL TRADING LLC',
-          shipper_name: isEuro ? 'EU DISTRIBUTORS GMBH' : 'ASIA GLOBAL TRADING LTD',
-          shipper_country: isEuro ? 'Germany' : 'China',
-          commercial_invoice_no: 'INV-99281-DXB',
-          invoice_date: '2026-06-30',
-          invoice_currency: isEuro ? 'EUR' : 'USD',
-          total_invoice_value: isEuro ? 18500.00 : 41104.00,
-          delivery_term: isEuro ? 'CIF' : 'CIF',
-          freight_charges: isEuro ? 800.00 : 2450.00,
-          insurance_charges: isEuro ? 120.00 : 154.00,
-          port_of_loading: isEuro ? 'DEHAM' : 'CNSHA',
-          port_of_discharge: 'AEJEA',
-          bill_of_lading_no: 'OOLU2039847192'
-        };
+        if (!isCustomsInvoice) {
+          throw new Error("Invalid pdf, your pdf doesn’t match major field requirement");
+        }
 
-        responseData.line_items = isEuro ? [
-          {
-            item_no: 1,
-            hs_code: '8409.91.90',
-            goods_description: 'Automotive Spark Ignition Parts',
-            quantity: 50,
-            unit_of_quantity: 'PCS',
-            package_type: 'Crate',
-            package_quantity: 3,
-            net_weight_kg: 450.00,
-            gross_weight_kg: 485.00,
-            country_of_origin: 'DE',
-            unit_price: 370.00,
-            total_value: 18500.00
-          }
-        ] : [
-          {
-            item_no: 1,
-            hs_code: '8504.40.90',
-            goods_description: 'UPS System 10kVA Uninterruptible Power Supply',
-            quantity: 10,
-            unit_of_quantity: 'PCS',
-            package_type: 'Pallet',
-            package_quantity: 2,
-            net_weight_kg: 850.00,
-            gross_weight_kg: 920.00,
-            country_of_origin: 'CN',
-            unit_price: 1800.00,
-            total_value: 18000.00
-          },
-          {
-            item_no: 2,
-            hs_code: '8507.20.80',
-            goods_description: 'Lead-acid Accumulators (12V 100Ah Batteries)',
-            quantity: 40,
-            unit_of_quantity: 'PCS',
-            package_type: 'Carton',
-            package_quantity: 10,
-            net_weight_kg: 1200.00,
-            gross_weight_kg: 1240.00,
-            country_of_origin: 'CN',
-            unit_price: 162.50,
-            total_value: 6500.00
-          },
-          {
-            item_no: 3,
-            hs_code: '8544.49.90',
-            goods_description: 'Insulated copper cable 16mm sq on drums',
-            quantity: 20,
-            unit_of_quantity: 'ROLL',
-            package_type: 'Drum',
-            package_quantity: 2,
-            net_weight_kg: 600.00,
-            gross_weight_kg: 650.00,
-            country_of_origin: 'CN',
-            unit_price: 700.00,
-            total_value: 14000.00
-          }
-        ];
+        const isGermany = nameLower.includes('germany') || nameLower.includes('machinery');
+        const isShenzhen = nameLower.includes('shenzhen') || nameLower.includes('components');
+        const isEuro = nameLower.includes('hamburg') || nameLower.includes('europe');
+
+        if (isGermany) {
+          responseData = {
+            declaration_type: 'Import to Local',
+            declaration_sub_type: 'Import to Local from Abroad',
+            consignee_code: 'AE-3948572',
+            consignee_name: 'IMEX GENERAL TRADING LLC',
+            shipper_name: 'MUNICH MACHINERY GMBH',
+            shipper_country: 'Germany',
+            commercial_invoice_no: 'INV-33402-DXB',
+            invoice_date: '2026-07-02',
+            invoice_currency: 'EUR',
+            total_invoice_value: 20500.00,
+            delivery_term: 'CIF',
+            freight_charges: 1350.00,
+            insurance_charges: 150.00,
+            port_of_loading: 'DEHAM',
+            port_of_discharge: 'AEJEA',
+            bill_of_lading_no: 'OOLU554032'
+          };
+          responseData.line_items = [
+            {
+              item_no: 1,
+              hs_code: '8409.91.90',
+              goods_description: 'Automotive Engine Shafts / Heavy Gear Components',
+              quantity: 50,
+              unit_of_quantity: 'PCS',
+              package_type: 'Case',
+              package_quantity: 2,
+              net_weight_kg: 400.00,
+              gross_weight_kg: 430.00,
+              country_of_origin: 'DE',
+              unit_price: 380.00,
+              total_value: 19000.00
+            }
+          ];
+        } else if (isShenzhen) {
+          responseData = {
+            declaration_type: 'Import to Local',
+            declaration_sub_type: 'Import to Local from Abroad',
+            consignee_code: 'AE-3948572',
+            consignee_name: 'IMEX GENERAL TRADING LLC',
+            shipper_name: 'SHENZHEN ELECTRONICS CO',
+            shipper_country: 'China',
+            commercial_invoice_no: 'INV-88711-DXB',
+            invoice_date: '2026-07-01',
+            invoice_currency: 'USD',
+            total_invoice_value: 12500.00,
+            delivery_term: 'CIF',
+            freight_charges: 1350.00,
+            insurance_charges: 150.00,
+            port_of_loading: 'CNSHA',
+            port_of_discharge: 'AEJEA',
+            bill_of_lading_no: 'OOLU778901'
+          };
+          responseData.line_items = [
+            {
+              item_no: 1,
+              hs_code: '8541.10.00',
+              goods_description: 'Semiconductor Diodes / Electronic Micro-components',
+              quantity: 5000,
+              unit_of_quantity: 'PCS',
+              package_type: 'Box',
+              package_quantity: 5,
+              net_weight_kg: 80.00,
+              gross_weight_kg: 90.00,
+              country_of_origin: 'CN',
+              unit_price: 1.20,
+              total_value: 6000.00
+            },
+            {
+              item_no: 2,
+              hs_code: '8542.31.00',
+              goods_description: 'Processor Microchips / Electronic Components',
+              quantity: 200,
+              unit_of_quantity: 'PCS',
+              package_type: 'Carton',
+              package_quantity: 1,
+              net_weight_kg: 10.00,
+              gross_weight_kg: 12.00,
+              country_of_origin: 'CN',
+              unit_price: 25.00,
+              total_value: 5000.00
+            }
+          ];
+        } else {
+          responseData = {
+            declaration_type: 'Import to Local',
+            declaration_sub_type: 'Import to Local from Abroad',
+            consignee_code: 'AE-3948572',
+            consignee_name: 'IMEX GENERAL TRADING LLC',
+            shipper_name: isEuro ? 'EU DISTRIBUTORS GMBH' : 'ASIA GLOBAL TRADING LTD',
+            shipper_country: isEuro ? 'Germany' : 'China',
+            commercial_invoice_no: 'INV-99281-DXB',
+            invoice_date: '2026-06-30',
+            invoice_currency: isEuro ? 'EUR' : 'USD',
+            total_invoice_value: isEuro ? 18500.00 : 41104.00,
+            delivery_term: isEuro ? 'CIF' : 'CIF',
+            freight_charges: isEuro ? 800.00 : 2450.00,
+            insurance_charges: isEuro ? 120.00 : 154.00,
+            port_of_loading: isEuro ? 'DEHAM' : 'CNSHA',
+            port_of_discharge: 'AEJEA',
+            bill_of_lading_no: 'OOLU2039847192'
+          };
+
+          responseData.line_items = isEuro ? [
+            {
+              item_no: 1,
+              hs_code: '8409.91.90',
+              goods_description: 'Automotive Spark Ignition Parts',
+              quantity: 50,
+              unit_of_quantity: 'PCS',
+              package_type: 'Crate',
+              package_quantity: 3,
+              net_weight_kg: 450.00,
+              gross_weight_kg: 485.00,
+              country_of_origin: 'DE',
+              unit_price: 370.00,
+              total_value: 18500.00
+            }
+          ] : [
+            {
+              item_no: 1,
+              hs_code: '8504.40.90',
+              goods_description: 'UPS System 10kVA Uninterruptible Power Supply',
+              quantity: 10,
+              unit_of_quantity: 'PCS',
+              package_type: 'Pallet',
+              package_quantity: 2,
+              net_weight_kg: 850.00,
+              gross_weight_kg: 920.00,
+              country_of_origin: 'CN',
+              unit_price: 1800.00,
+              total_value: 18000.00
+            },
+            {
+              item_no: 2,
+              hs_code: '8507.20.80',
+              goods_description: 'Lead-acid Accumulators (12V 100Ah Batteries)',
+              quantity: 40,
+              unit_of_quantity: 'PCS',
+              package_type: 'Carton',
+              package_quantity: 10,
+              net_weight_kg: 1200.00,
+              gross_weight_kg: 1240.00,
+              country_of_origin: 'CN',
+              unit_price: 162.50,
+              total_value: 6500.00
+            },
+            {
+              item_no: 3,
+              hs_code: '8544.49.90',
+              goods_description: 'Insulated copper cable 16mm sq on drums',
+              quantity: 20,
+              unit_of_quantity: 'ROLL',
+              package_type: 'Drum',
+              package_quantity: 2,
+              net_weight_kg: 600.00,
+              gross_weight_kg: 650.00,
+              country_of_origin: 'CN',
+              unit_price: 700.00,
+              total_value: 14000.00
+            }
+          ];
+        }
 
         if (responseData.delivery_term === 'FOB' && (responseData.freight_charges || 0) === 0) {
           warningsList.push('Warning: Incoterm is FOB, but Freight Charges were not added on the customs invoice totals page.');

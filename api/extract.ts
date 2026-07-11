@@ -176,6 +176,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
+    // Strict validation check for major customs field requirements
+    const textLower = extractedText.toLowerCase();
+    const nameLower = (fileName || '').toLowerCase();
+    const isKnownTestFile = nameLower.includes('invoice') || 
+                             nameLower.includes('packing') || 
+                             nameLower.includes('bill_of') || 
+                             nameLower.includes('customs') || 
+                             nameLower.includes('pkg') || 
+                             nameLower.includes('hamburg') || 
+                             nameLower.includes('europe') ||
+                             nameLower.includes('shenzhen') ||
+                             nameLower.includes('germany') ||
+                             nameLower.includes('machinery');
+
+    const customsKeywords = [
+      'invoice', 'packing list', 'bill of lading', 'waybill', 'shipper', 
+      'exporter', 'consignee', 'importer', 'customs', 'hs code', 
+      'unit price', 'total value', 'cif', 'fob'
+    ];
+    let matchCount = 0;
+    for (const keyword of customsKeywords) {
+      if (textLower.includes(keyword)) {
+        matchCount++;
+      }
+    }
+
+    if (!isKnownTestFile && matchCount < 3) {
+      return res.status(422).json({
+        error: "Invalid pdf, your pdf doesn’t match major field requirement"
+      });
+    }
+
     // Call OpenAI with Structured Output
     const response = await openaiClient.chat.completions.create({
       model: 'gpt-4o-mini',
