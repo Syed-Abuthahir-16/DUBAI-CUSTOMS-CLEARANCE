@@ -88,24 +88,33 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
 
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Top navy accent strip */}
-      <div className="h-1 bg-gradient-to-r from-[#0C2461] via-[#C9A84C] to-[#0C2461]" />
+    <div className="min-h-screen bg-[#061129] flex flex-col relative overflow-hidden">
+      {/* 25% Opacity Background Image of Dubai Cargo Port */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center z-0 opacity-25" 
+        style={{ backgroundImage: "url('/dubai_cargo_port.png')" }}
+      />
+      
+      {/* Ambient Radial Gradient for premium glow */}
+      <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#061129]/70 to-[#061129] z-5 pointer-events-none" />
 
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-16">
+      {/* Top navy/gold brand strip */}
+      <div className="h-[3px] bg-gradient-to-r from-[#0C2461] via-[#C9A84C] to-[#0C2461] z-10" />
+
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-16 z-10 relative">
         
-        {/* Card */}
-        <div className="w-full max-w-[400px] bg-white border border-[#E5E7EB] rounded-2xl shadow-lg overflow-hidden animate-fade-in">
+        {/* Card (Larger, more premium with subtle gold glow outline) */}
+        <div className="w-full max-w-[440px] bg-white border border-[#E5E7EB]/80 rounded-2xl shadow-[0_8px_32px_rgba(201,168,76,0.15)] overflow-hidden animate-fade-in">
           
           {/* Card header — navy bg */}
-          <div className="bg-[#0C2461] px-8 pt-10 pb-8 flex flex-col items-center gap-6">
+          <div className="bg-[#0C2461] px-8 pt-12 pb-10 flex flex-col items-center gap-6">
             <SmartHandlingLogo />
           </div>
 
           {/* Card body */}
-          <div className="px-8 py-8 flex flex-col gap-4">
+          <div className="px-8 py-10 flex flex-col gap-6">
             <div className="text-center">
-              <h2 className="text-lg font-semibold text-[#0A0A0A]">Welcome back</h2>
+              <h2 className="text-xl font-bold text-[#0A0A0A]">Welcome back</h2>
               <p className="text-sm text-[#6B7280] mt-1">Sign in to access your declarations</p>
             </div>
 
@@ -120,7 +129,7 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
               id="google-signin-btn"
               onClick={handleGoogleSignIn}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 h-12 px-6 border border-[#E5E7EB] rounded-xl bg-white hover:bg-[#F7F7F7] hover:border-[#0A0A0A] transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm text-[#0A0A0A] shadow-sm"
+              className="w-full flex items-center justify-center gap-3 h-13 px-6 border border-[#E5E7EB] rounded-xl bg-white hover:bg-[#F7F7F7] hover:border-[#0A0A0A] transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-sm text-[#0A0A0A] shadow-sm cursor-pointer"
             >
               {isLoading ? (
                 <div className="w-4 h-4 rounded-full border-2 border-[#0C2461] border-t-transparent animate-spin" />
@@ -139,13 +148,13 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
         </div>
 
         {/* Features strip */}
-        <div className="mt-8 flex items-center gap-8 text-[11px] text-[#9CA3AF]">
+        <div className="mt-10 flex items-center gap-8 text-[11px] text-[#E5E7EB] font-medium bg-[#061129]/65 px-5 py-2 rounded-full border border-white/5 backdrop-blur-sm">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C9A84C]" />
             Mirsal 2 Ready
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0C2461]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-white" />
             AI Extraction
           </span>
           <span className="flex items-center gap-1.5">
@@ -156,7 +165,7 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
       </div>
 
       {/* Bottom gold accent strip */}
-      <div className="h-1 bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent" />
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent z-10" />
     </div>
   );
 };

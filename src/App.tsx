@@ -345,6 +345,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
             onSelect={handleSelectDeclaration}
             onDelete={handleDeleteDeclaration}
             isProcessing={isProcessing}
+            userEmail={user?.email}
           />
         ) : (
           activeDeclaration && (

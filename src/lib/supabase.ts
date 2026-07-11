@@ -194,5 +194,19 @@ export const db = {
         .eq('user_id', user.id);
       if (deleteError) throw deleteError;
     }
+  },
+
+  async submitSuggestion(email: string | null, text: string): Promise<void> {
+    if (isMockMode) {
+      console.log('Mock Feedback Submitted:', { email, text });
+      return;
+    }
+    const { error } = await supabaseClient!
+      .from('suggestions')
+      .insert({
+        user_email: email,
+        suggestion_text: text
+      });
+    if (error) throw error;
   }
 };
