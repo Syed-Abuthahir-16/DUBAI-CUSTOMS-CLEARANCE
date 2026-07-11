@@ -74,7 +74,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   }).length;
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-6 py-4 md:py-6 flex flex-col gap-4 md:gap-5 animate-in-up">
+    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 flex flex-col gap-4 md:gap-5 animate-in-up">
 
       {/* ── KPI Stats Panel ─────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-sm">
@@ -87,7 +87,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <TrendingUp className="w-3.5 h-3.5 text-[#C9A84C]" />
           </div>
           <div className="flex items-baseline gap-2 mt-3 pl-4">
-            <span className="text-3xl font-bold text-[#0A0A0A]">{totalCount}</span>
+            <span className="text-4xl font-bold text-[#0A0A0A]">{totalCount}</span>
             <span className="text-xs text-green-600 font-semibold">+{processedToday} today</span>
           </div>
         </div>
@@ -99,7 +99,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <Zap className="w-3.5 h-3.5 text-[#0C2461]" />
           </div>
           <div className="flex items-baseline gap-2 mt-3">
-            <span className="text-3xl font-bold text-[#0A0A0A]">2.8s</span>
+            <span className="text-4xl font-bold text-[#0A0A0A]">2.8s</span>
           </div>
         </div>
 
@@ -110,7 +110,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <Shield className="w-3.5 h-3.5 text-[#0A0A0A]" />
           </div>
           <div className="flex items-baseline gap-2 mt-3">
-            <span className={`text-3xl font-bold ${warningCount > 0 ? 'text-amber-600' : 'text-[#0A0A0A]'}`}>
+            <span className={`text-4xl font-bold ${warningCount > 0 ? 'text-amber-600' : 'text-[#0A0A0A]'}`}>
               {warningCount}
             </span>
           </div>

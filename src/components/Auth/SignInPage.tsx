@@ -23,12 +23,17 @@ const SmartHandlingLogo: React.FC = () => (
       <circle cx="36" cy="36" r="24" fill="white" opacity="0.1" />
       <text x="36" y="44" textAnchor="middle" fontFamily="Inter, sans-serif" fontWeight="800" fontSize="24" fill="#C9A84C" letterSpacing="-1">SH</text>
     </svg>
-    <div className="text-center">
-      <h1 className="text-2xl font-bold text-white tracking-tight animate-fade-in">
-        Smart <span className="text-[#C9A84C]">Handling</span>
-      </h1>
-      <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent my-2" />
-      <p className="text-[11px] uppercase tracking-widest text-[#F3F4F6]/80 font-semibold">
+    <div className="text-center flex flex-col items-center">
+      <div className="flex items-baseline gap-2 justify-center">
+        <span className="text-3xl font-semibold italic text-white tracking-wide" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+          Smart
+        </span>
+        <span className="text-[14px] font-sans font-extrabold uppercase tracking-[0.25em] text-[#C9A84C]">
+          Handling
+        </span>
+      </div>
+      <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent my-3" />
+      <p className="text-[10px] uppercase tracking-[0.25em] text-[#F3F4F6]/80 font-bold">
         Intelligent Customs Declaration
       </p>
     </div>

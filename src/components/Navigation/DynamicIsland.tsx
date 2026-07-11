@@ -54,21 +54,26 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
   return (
     <div className="w-full px-4 pt-4 flex justify-center z-50">
       <div
-        className="w-full max-w-5xl bg-white border border-[#E5E7EB] px-5 py-3 md:py-1.5 flex flex-col md:flex-row items-center justify-between shadow-sm transition-all gap-3 md:gap-0 rounded-2xl md:rounded-full relative"
+        className="w-full max-w-7xl bg-white border border-[#E5E7EB] px-6 py-4 md:py-2.5 flex flex-col md:flex-row items-center justify-between shadow-sm transition-all gap-3 md:gap-0 rounded-2xl md:rounded-full relative min-h-[64px]"
       >
         {/* Brand Row (On mobile, we space between brand and profile trigger) */}
         <div className="flex items-center justify-between w-full md:w-auto">
           <div
-            className="flex items-center gap-2.5 cursor-pointer select-none"
+            className="flex items-center gap-3 cursor-pointer select-none"
             onClick={() => onNavigate('dashboard')}
           >
-            <SmartHandlingMark size={28} />
-            <div className="flex flex-col leading-tight">
-              <span className="text-[13px] font-bold tracking-tight text-[#0A0A0A]">
-                Smart <span className="text-[#0C2461]">Handling</span>
-              </span>
-              <span className="text-[9px] text-[#C9A84C] uppercase tracking-widest font-semibold">
-                Intelligent Customs
+            <SmartHandlingMark size={32} />
+            <div className="flex flex-col leading-none">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-[18px] font-semibold tracking-wide text-[#0A0A0A] italic" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  Smart
+                </span>
+                <span className="text-[10px] font-sans font-extrabold uppercase tracking-[0.25em] text-[#0C2461]">
+                  Handling
+                </span>
+              </div>
+              <span className="text-[8px] text-[#C9A84C] uppercase tracking-[0.28em] font-bold mt-1">
+                INTELLIGENT CUSTOMS
               </span>
             </div>
           </div>
