@@ -86,9 +86,13 @@ export const db = {
       return data ? JSON.parse(data) : [];
     }
     
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
+    
     const { data, error } = await supabaseClient!
       .from('declarations')
       .select('*')
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false });
       
     if (error) throw error;
@@ -134,10 +138,13 @@ export const db = {
       return newDeclaration;
     }
     
+    const { data: { user } } = await supabase.auth.getUser();
+    
     const { data, error } = await supabaseClient!
       .from('declarations')
       .upsert({
         ...declaration,
+        user_id: user?.id || null,
         updated_at: timestamp
       })
       .select()

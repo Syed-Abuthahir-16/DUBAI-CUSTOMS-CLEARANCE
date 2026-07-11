@@ -226,7 +226,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
   };
 
   return (
-    <div className="flex-1 flex overflow-hidden h-[calc(100vh-70px)] bg-background">
+    <div className="flex-1 flex overflow-hidden bg-background">
       
       {/* 1. COLLAPSIBLE SIDEBAR (LEFT) */}
       <div 
@@ -335,37 +335,40 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Workspace Toolbar */}
-        <div className="h-14 border-b border-[#E5E7EB] px-6 flex items-center justify-between bg-white sticky top-0 z-20">
-          <div className="flex items-center gap-1.5 bg-[#F3F4F6] p-1 rounded-lg border border-[#E5E7EB]">
+        <div className="min-h-14 border-b border-[#E5E7EB] px-4 md:px-6 py-2.5 md:py-0 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0 bg-white sticky top-0 z-20">
+          <div className="flex items-center gap-1 bg-[#F3F4F6] p-1 rounded-lg border border-[#E5E7EB] w-full md:w-auto overflow-x-auto select-none no-scrollbar">
             <button
               onClick={() => setActiveTab('pdf')}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-2.5 md:px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'pdf' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
               }`}
             >
-              1. PDF Document
+              <span className="hidden sm:inline">1. PDF Document</span>
+              <span className="inline sm:hidden">1. PDF</span>
             </button>
             <button
               onClick={() => setActiveTab('header')}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-2.5 md:px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'header' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
               }`}
             >
-              2. Declaration Header
+              <span className="hidden sm:inline">2. Declaration Header</span>
+              <span className="inline sm:hidden">2. Header</span>
             </button>
             <button
               onClick={() => setActiveTab('items')}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-2.5 md:px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'items' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
               }`}
             >
-              3. Line Items ({items.length})
+              <span className="hidden sm:inline">3. Line Items ({items.length})</span>
+              <span className="inline sm:hidden">3. Items ({items.length})</span>
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full md:w-auto justify-end">
             {showSavedFeedback && (
-              <span className="text-xs text-green-600 font-semibold font-mono flex items-center gap-1">
+              <span className="text-xs text-green-600 font-semibold font-mono flex items-center gap-1 mr-1">
                 <Check className="w-3.5 h-3.5" /> Changes saved
               </span>
             )}
@@ -375,16 +378,26 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
               size="sm" 
               onClick={handleLocalSave}
               disabled={isSaving}
-              className="gap-1.5"
+              className="gap-1.5 text-[11px] md:text-xs px-2.5 md:px-3 py-1"
             >
-              <Save className="w-4 h-4" /> Save
+              <Save className="w-3.5 h-3.5" /> Save
             </Button>
             
-            <Button variant="secondary" size="sm" onClick={handleExportCSV} className="gap-1.5">
-              <Download className="w-4 h-4" /> Export CSV
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              onClick={handleExportCSV} 
+              className="gap-1.5 text-[11px] md:text-xs px-2.5 md:px-3 py-1"
+            >
+              <Download className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Export CSV</span><span className="inline sm:hidden">CSV</span>
             </Button>
-            <Button variant="gold" size="sm" onClick={handleExportXML} className="gap-1.5">
-              <FileCode className="w-4 h-4" /> Export XML
+            <Button 
+              variant="gold" 
+              size="sm" 
+              onClick={handleExportXML} 
+              className="gap-1.5 text-[11px] md:text-xs px-2.5 md:px-3 py-1"
+            >
+              <FileCode className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Export XML</span><span className="inline sm:hidden">XML</span>
             </Button>
           </div>
         </div>
@@ -420,7 +433,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
           </div>
 
           {/* Form Editor Panel (Right half) - Hidden on mobile if activeTab is 'pdf' */}
-          <div className={`${activeTab === 'pdf' ? 'hidden lg:block' : 'block'} flex-1 overflow-y-auto p-6`}>
+          <div className={`${activeTab === 'pdf' ? 'hidden lg:block' : 'block'} flex-1 overflow-y-auto p-4 md:p-6`}>
             {activeTab === 'header' ? (
               <div className="max-w-3xl mx-auto flex flex-col gap-6 animate-in-up">
                 <div className="flex items-center gap-3">
@@ -430,7 +443,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                   </h3>
                 </div>
                 
-                <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
+                <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
                   <CopyInput 
                     id="decl_type" 
                     label="Declaration Type" 
@@ -469,7 +482,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                   />
                 </div>
 
-                <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 grid grid-cols-1 sm:grid-cols-3 gap-4 shadow-sm">
+                <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-3 gap-4 shadow-sm">
                   <CopyInput 
                     id="inv_no" 
                     label="Commercial Invoice No" 
@@ -524,7 +537,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                   />
                 </div>
 
-                <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
+                <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
                   <CopyInput 
                     id="port_load" 
                     label="Port of Loading" 
