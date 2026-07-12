@@ -4,11 +4,48 @@ import {
   Trash2, Plus, Download, FileCode, CheckCircle, Save
 } from 'lucide-react';
 import { Button, Input, Badge } from '../ui';
-import type { Declaration } from '../../lib/supabase';
+import { db, type Declaration } from '../../lib/supabase';
 
 // Navy + gold palette constants
 const NAVY = '#0C2461';
 const GOLD = '#C9A84C';
+
+interface CopyInputProps {
+  id: string;
+  label: string;
+  value: any;
+  onChange: (val: string) => void;
+  copiedField: string | null;
+  onCopy: (id: string, val: string) => void;
+  type?: string;
+}
+
+const CopyInput: React.FC<CopyInputProps> = ({ 
+  id, label, value, onChange, copiedField, onCopy, type = 'text' 
+}) => {
+  const isCopied = copiedField === id;
+  return (
+    <div className="relative w-full group">
+      <Input
+        id={id}
+        label={label}
+        value={value || ''}
+        type={type}
+        onChange={(e) => onChange(e.target.value)}
+        className="pr-10 bg-white border-[#E5E7EB] focus:border-[#0C2461] focus:ring-1 focus:ring-[#0C2461]"
+      />
+      <button
+        type="button"
+        onClick={() => onCopy(id, value)}
+        disabled={!value}
+        className="absolute right-2.5 bottom-2 p-1 text-[#6B7280] hover:text-[#0C2461] hover:bg-[#F3F4F6] transition-all rounded cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+        title="Copy field value"
+      >
+        {isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+      </button>
+    </div>
+  );
+};
 
 interface EditorContainerProps {
   declaration: Declaration;
@@ -124,7 +161,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
   };
 
   // Export functions
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     // Generate CSV representing Dubai Customs Bulk Upload fields
     const headers = [
       'Item No', 'HS Code', 'Goods Description', 'Qty', 'Unit', 'Pkg Type', 
@@ -141,12 +178,20 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
       + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
       
     const encodedUri = encodeURI(csvContent);
+    const fileName = `customs_declaration_${header.commercial_invoice_no || 'draft'}.csv`;
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `customs_declaration_${header.commercial_invoice_no || 'draft'}.csv`);
+    link.setAttribute("download", fileName);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    // Save CSV export file to user_files directory
+    try {
+      await db.saveUserFile(fileName, 'csv');
+    } catch (err) {
+      console.error('Failed to save user CSV file log:', err);
+    }
   };
 
   const handleExportXML = () => {
@@ -192,38 +237,6 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  // Reusable Copy Field component
-  const CopyInput: React.FC<{
-    id: string;
-    label: string;
-    value: any;
-    onChange: (val: string) => void;
-    type?: string;
-  }> = ({ id, label, value, onChange, type = 'text' }) => {
-    const isCopied = copiedField === id;
-    return (
-      <div className="relative w-full group">
-        <Input
-          id={id}
-          label={label}
-          value={value || ''}
-          type={type}
-          onChange={(e) => onChange(e.target.value)}
-          className="pr-10 bg-white border-[#E5E7EB] focus:border-[#0C2461] focus:ring-1 focus:ring-[#0C2461]"
-        />
-        <button
-          type="button"
-          onClick={() => handleCopy(id, value)}
-          disabled={!value}
-          className="absolute right-2.5 bottom-2 p-1 text-[#6B7280] hover:text-[#0C2461] hover:bg-[#F3F4F6] transition-all rounded cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-          title="Copy field value"
-        >
-          {isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
-        </button>
-      </div>
-    );
   };
 
   return (
@@ -450,36 +463,48 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     label="Declaration Type" 
                     value={header.declaration_type} 
                     onChange={(val) => handleHeaderChange('declaration_type', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="decl_sub" 
                     label="Declaration Sub-Type" 
                     value={header.declaration_sub_type} 
                     onChange={(val) => handleHeaderChange('declaration_sub_type', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="cons_code" 
                     label="Consignee Code" 
                     value={header.consignee_code} 
                     onChange={(val) => handleHeaderChange('consignee_code', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="cons_name" 
                     label="Consignee Name (Importer)" 
                     value={header.consignee_name} 
                     onChange={(val) => handleHeaderChange('consignee_name', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="ship_name" 
                     label="Shipper Name (Exporter)" 
                     value={header.shipper_name} 
                     onChange={(val) => handleHeaderChange('shipper_name', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="ship_country" 
                     label="Shipper Country" 
                     value={header.shipper_country} 
                     onChange={(val) => handleHeaderChange('shipper_country', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                 </div>
 
@@ -489,6 +514,8 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     label="Commercial Invoice No" 
                     value={header.commercial_invoice_no} 
                     onChange={(val) => handleHeaderChange('commercial_invoice_no', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="inv_date" 
@@ -496,24 +523,32 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     value={header.invoice_date} 
                     onChange={(val) => handleHeaderChange('invoice_date', val)} 
                     type="date"
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="bl_no" 
                     label="Bill of Lading No" 
                     value={header.bill_of_lading_no} 
                     onChange={(val) => handleHeaderChange('bill_of_lading_no', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="incoterm" 
                     label="Delivery Term (Incoterm)" 
                     value={header.delivery_term} 
                     onChange={(val) => handleHeaderChange('delivery_term', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="currency" 
                     label="Invoice Currency" 
                     value={header.invoice_currency} 
                     onChange={(val) => handleHeaderChange('invoice_currency', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="total_val" 
@@ -521,6 +556,8 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     value={header.total_invoice_value} 
                     onChange={(val) => handleHeaderChange('total_invoice_value', Number(val))} 
                     type="number"
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="freight" 
@@ -528,6 +565,8 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     value={header.freight_charges} 
                     onChange={(val) => handleHeaderChange('freight_charges', Number(val))} 
                     type="number"
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="insurance" 
@@ -535,6 +574,8 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     value={header.insurance_charges} 
                     onChange={(val) => handleHeaderChange('insurance_charges', Number(val))} 
                     type="number"
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                 </div>
 
@@ -544,12 +585,16 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     label="Port of Loading" 
                     value={header.port_of_loading} 
                     onChange={(val) => handleHeaderChange('port_of_loading', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                   <CopyInput 
                     id="port_dis" 
                     label="Port of Discharge" 
                     value={header.port_of_discharge} 
                     onChange={(val) => handleHeaderChange('port_of_discharge', val)} 
+                    copiedField={copiedField}
+                    onCopy={handleCopy}
                   />
                 </div>
               </div>

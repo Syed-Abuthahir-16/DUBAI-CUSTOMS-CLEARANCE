@@ -208,5 +208,91 @@ export const db = {
         suggestion_text: text
       });
     if (error) throw error;
+  },
+
+  async getUserFiles(): Promise<any[]> {
+    if (isMockMode) {
+      const stored = localStorage.getItem('mock_user_files');
+      if (!stored) {
+        const initialFiles = [
+          {
+            id: 'mock-file-1',
+            file_name: 'invoice_shenzhen_components.pdf',
+            file_type: 'pdf',
+            created_at: new Date(Date.now() - 30 * 60000).toISOString()
+          },
+          {
+            id: 'mock-file-2',
+            file_name: 'invoice_germany_machinery.pdf',
+            file_type: 'pdf',
+            created_at: new Date(Date.now() - 120 * 60000).toISOString()
+          },
+          {
+            id: 'mock-file-3',
+            file_name: 'customs_declaration_INV-88711-DXB.csv',
+            file_type: 'csv',
+            created_at: new Date(Date.now() - 10 * 60000).toISOString()
+          }
+        ];
+        localStorage.setItem('mock_user_files', JSON.stringify(initialFiles));
+        return initialFiles;
+      }
+      return JSON.parse(stored);
+    }
+    const { data: { user } } = await supabaseClient!.auth.getUser();
+    if (!user) return [];
+    
+    const { data, error } = await supabaseClient!
+      .from('user_files')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
+
+  async saveUserFile(fileName: string, fileType: string): Promise<any> {
+    if (isMockMode) {
+      const stored = localStorage.getItem('mock_user_files');
+      const files = stored ? JSON.parse(stored) : [];
+      const newFile = {
+        id: crypto.randomUUID(),
+        file_name: fileName,
+        file_type: fileType,
+        created_at: new Date().toISOString()
+      };
+      files.unshift(newFile);
+      localStorage.setItem('mock_user_files', JSON.stringify(files));
+      return newFile;
+    }
+    const { data: { user } } = await supabaseClient!.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { data, error } = await supabaseClient!
+      .from('user_files')
+      .insert({
+        user_id: user.id,
+        file_name: fileName,
+        file_type: fileType
+      })
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteUserFile(id: string): Promise<void> {
+    if (isMockMode) {
+      const stored = localStorage.getItem('mock_user_files');
+      if (stored) {
+        const files = JSON.parse(stored).filter((f: any) => f.id !== id);
+        localStorage.setItem('mock_user_files', JSON.stringify(files));
+      }
+      return;
+    }
+    const { error } = await supabaseClient!
+      .from('user_files')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
   }
 };

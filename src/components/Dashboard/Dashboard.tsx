@@ -3,6 +3,7 @@ import { UploadCloud, FileText, AlertCircle, Clock, Trash2, ArrowRight, Shield, 
 import { Card, Badge } from '../ui';
 import type { Declaration } from '../../lib/supabase';
 import { db } from '../../lib/supabase';
+import { AnimatedCounter } from '../ui/AnimatedCounter';
 
 interface DashboardProps {
   declarations: Declaration[];
@@ -72,6 +73,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
   };
 
   const processFile = async (file: File) => {
+    if (processedToday >= 4) {
+      setErrorMessage('Daily upload limit reached. You can only upload and extract 4 PDFs per day on the sandbox account plan.');
+      return;
+    }
     if (file.type !== 'application/pdf') {
       setErrorMessage('Please upload a PDF document (Commercial Invoice, Packing List, or B/L).');
       return;
@@ -438,7 +443,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex flex-col justify-between">
             <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Total Declarations</span>
             <div className="flex items-baseline gap-1.5 mt-2">
-              <span className="text-2xl font-bold text-[#0A0A0A]">{totalCount}</span>
+              <span className="text-2xl font-bold text-[#0A0A0A]">
+                <AnimatedCounter target={totalCount} />
+              </span>
               <span className="text-[10px] text-[#0C2461] font-bold">+{processedToday} today</span>
             </div>
           </div>
@@ -447,7 +454,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex flex-col justify-between">
             <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Average Speed</span>
             <div className="flex items-baseline gap-1.5 mt-2">
-              <span className="text-2xl font-bold text-[#0A0A0A]">2.8s</span>
+              <span className="text-2xl font-bold text-[#0A0A0A]">
+                <AnimatedCounter target={2.8} decimals={1} suffix="s" />
+              </span>
               <span className="text-[10px] text-[#0C2461] font-bold">↓ 0.5s</span>
             </div>
           </div>
@@ -456,7 +465,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex flex-col justify-between">
             <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Success Rate</span>
             <div className="flex items-baseline gap-1.5 mt-2">
-              <span className="text-2xl font-bold text-[#0A0A0A]">100%</span>
+              <span className="text-2xl font-bold text-[#0A0A0A]">
+                <AnimatedCounter target={100} suffix="%" />
+              </span>
               <span className="text-[10px] text-[#0C2461] font-bold">↑ Excellent</span>
             </div>
           </div>
@@ -465,7 +476,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex flex-col justify-between">
             <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Audit Warnings</span>
             <div className="flex items-baseline gap-1.5 mt-2">
-              <span className="text-2xl font-bold text-[#0A0A0A]">{warningCount}</span>
+              <span className="text-2xl font-bold text-[#0A0A0A]">
+                <AnimatedCounter target={warningCount} />
+              </span>
               <span className="text-[10px] text-[#6B7280] font-bold">No issues</span>
             </div>
           </div>

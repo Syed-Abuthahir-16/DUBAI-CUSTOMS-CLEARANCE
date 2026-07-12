@@ -2,10 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { db, type Declaration } from './lib/supabase';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { EditorContainer } from './components/DeclarationEditor/EditorContainer';
+import { DocumentsView } from './components/Documents/DocumentsView';
+import { SettingsView } from './components/Settings/SettingsView';
 import { AuthGuard } from './components/Auth/AuthGuard';
 import { 
-  LayoutDashboard, UploadCloud, FileText, Folder, ShieldCheck, 
-  BarChart3, Settings, LogOut, Trash2, Bell, ChevronDown, HelpCircle 
+  LayoutDashboard, FileText, Folder, Settings, 
+  LogOut, Trash2, Bell, ChevronDown, HelpCircle 
 } from 'lucide-react';
 
 export default function App() {
@@ -38,7 +40,7 @@ const SmartHandlingMark: React.FC<{ size?: number }> = ({ size = 28 }) => (
 );
 
 function MainApp({ user, onSignOut }: MainAppProps) {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'editor'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'editor' | 'documents' | 'settings'>('dashboard');
   const [declarations, setDeclarations] = useState<Declaration[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -301,6 +303,14 @@ function MainApp({ user, onSignOut }: MainAppProps) {
 
       const saved = await db.saveDeclaration(newDec);
       setDeclarations(prev => [saved, ...prev]);
+      
+      // Save PDF upload record to user_files directory
+      try {
+        await db.saveUserFile(fileName, 'pdf');
+      } catch (fileErr) {
+        console.error('Failed to log PDF file record:', fileErr);
+      }
+
       setSelectedId(saved.id);
       setActiveTab('editor');
     } catch (err: any) {
@@ -402,22 +412,27 @@ function MainApp({ user, onSignOut }: MainAppProps) {
 
           <div className="w-full h-px bg-[#E5E7EB] my-3" />
 
-          {/* Placeholder items matching the 2nd picture */}
+          {/* Customs System Navigation Category */}
           <div className="flex flex-col gap-1">
             <span className="px-4 text-[10px] uppercase font-bold tracking-wider text-[#9CA3AF] mb-1 block">Customs System</span>
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
-              <UploadCloud className="w-4 h-4" /> New Extraction
-            </button>
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
+            <button 
+              onClick={() => setActiveTab('documents')}
+              className={`w-full flex items-center gap-3 px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                activeTab === 'documents'
+                  ? 'bg-[#0C2461]/5 text-[#0C2461]'
+                  : 'text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6]'
+              }`}
+            >
               <Folder className="w-4 h-4" /> Documents
             </button>
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
-              <ShieldCheck className="w-4 h-4" /> Audit & Compliance
-            </button>
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
-              <BarChart3 className="w-4 h-4" /> Analytics
-            </button>
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
+            <button 
+              onClick={() => setActiveTab('settings')}
+              className={`w-full flex items-center gap-3 px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                activeTab === 'settings'
+                  ? 'bg-[#0C2461]/5 text-[#0C2461]'
+                  : 'text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6]'
+              }`}
+            >
               <Settings className="w-4 h-4" /> Settings
             </button>
           </div>
@@ -514,7 +529,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
 
         {/* Content Box container */}
         <main className="flex-1 overflow-y-auto min-w-0">
-          {activeTab === 'dashboard' ? (
+          {activeTab === 'dashboard' && (
             <Dashboard
               declarations={declarations}
               onUpload={handleUpload}
@@ -523,16 +538,29 @@ function MainApp({ user, onSignOut }: MainAppProps) {
               isProcessing={isProcessing}
               userEmail={user?.email}
             />
-          ) : (
-            activeDeclaration && (
-              <EditorContainer
-                declaration={activeDeclaration}
-                onBack={() => setActiveTab('dashboard')}
-                onSave={handleSaveDeclaration}
-                declarationsList={declarations}
-                onSelectOther={handleSelectDeclaration}
-              />
-            )
+          )}
+          {activeTab === 'editor' && activeDeclaration && (
+            <EditorContainer
+              declaration={activeDeclaration}
+              onBack={() => setActiveTab('dashboard')}
+              onSave={handleSaveDeclaration}
+              declarationsList={declarations}
+              onSelectOther={handleSelectDeclaration}
+            />
+          )}
+          {activeTab === 'documents' && (
+            <DocumentsView />
+          )}
+          {activeTab === 'settings' && (
+            <SettingsView
+              user={user}
+              processedTodayCount={declarations.filter(d => {
+                const today = new Date().toISOString().split('T')[0];
+                return d.created_at.startsWith(today);
+              }).length}
+              onSignOut={onSignOut}
+              onDeleteAccount={handleDeleteAccount}
+            />
           )}
         </main>
       </div>
