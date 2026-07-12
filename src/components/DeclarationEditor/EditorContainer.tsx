@@ -204,19 +204,20 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
   }> = ({ id, label, value, onChange, type = 'text' }) => {
     const isCopied = copiedField === id;
     return (
-      <div className="relative group">
+      <div className="relative w-full group">
         <Input
           id={id}
           label={label}
           value={value || ''}
           type={type}
           onChange={(e) => onChange(e.target.value)}
+          className="pr-10 bg-white border-[#E5E7EB] focus:border-[#0C2461] focus:ring-1 focus:ring-[#0C2461]"
         />
         <button
           type="button"
           onClick={() => handleCopy(id, value)}
           disabled={!value}
-          className="absolute right-2 bottom-2 p-1 text-text-secondary hover:text-accent-orange opacity-0 group-hover:opacity-100 transition-all rounded hover:bg-background cursor-pointer disabled:opacity-0"
+          className="absolute right-2.5 bottom-2 p-1 text-[#6B7280] hover:text-[#0C2461] hover:bg-[#F3F4F6] transition-all rounded cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
           title="Copy field value"
         >
           {isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}

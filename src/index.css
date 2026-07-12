@@ -3,7 +3,7 @@
 
 :root {
   /* Base palette — white & black */
-  --background: #F7F7F7;
+  --background: #F3F4F6;
   --foreground: #0A0A0A;
   --panel: #FFFFFF;
   --top-notch: #FFFFFF;
@@ -12,18 +12,18 @@
   --text-primary: #0A0A0A;
   --text-secondary: #6B7280;
 
-  /* Dubai Customs accent — deep navy & gold only */
+  /* Consolidated Single Brand Accent Color (Deep Navy/Indigo #0C2461) */
   --accent-navy: #0C2461;
-  --accent-gold: #C9A84C;
-  --accent-gold-light: #F0E2B6;
+  --accent-gold: #0C2461;
+  --accent-gold-light: #E0E7FF;
 
-  /* Status colours */
-  --color-success: #16A34A;
-  --color-warning: #D97706;
-  --color-error: #DC2626;
+  /* Status colors mapped to neutral slate or the brand color */
+  --color-success: #0C2461;
+  --color-warning: #0C2461;
+  --color-error: #9CA3AF;
 
-  /* Legacy aliases kept for component compat */
-  --accent-orange: #C9A84C;
+  /* Legacy compatibility aliases mapped to the same single brand color */
+  --accent-orange: #0C2461;
   --accent-violet: #0C2461;
 
   --radius-badge: 100px;

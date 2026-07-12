@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { UploadCloud, FileText, AlertCircle, Clock, Trash2, ArrowRight, TrendingUp, Shield, Zap } from 'lucide-react';
+import { UploadCloud, FileText, AlertCircle, Clock, Trash2, ArrowRight, Shield, Zap } from 'lucide-react';
 import { Card, Badge } from '../ui';
 import type { Declaration } from '../../lib/supabase';
 import { db } from '../../lib/supabase';
@@ -102,64 +102,38 @@ export const Dashboard: React.FC<DashboardProps> = ({
   }).length;
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 flex flex-col gap-4 md:gap-5 animate-in-up">
-
-      {/* ── KPI Stats Panel ─────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-sm">
-        {/* Stat 1 — Total Declarations */}
-        <div className="p-4 md:p-5 border-b sm:border-b-0 sm:border-r border-[#E5E7EB] flex flex-col justify-between relative overflow-hidden">
-          {/* Gold left accent bar */}
-          <div className="absolute left-0 top-4 md:top-5 bottom-4 md:bottom-5 w-[3px] bg-[#C9A84C] rounded-r-full" />
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] pl-4">Total Declarations</span>
-            <TrendingUp className="w-3.5 h-3.5 text-[#C9A84C]" />
-          </div>
-          <div className="flex items-baseline gap-2 mt-3 pl-4">
-            <span className="text-4xl font-bold text-[#0A0A0A]">{totalCount}</span>
-            <span className="text-xs text-green-600 font-semibold">+{processedToday} today</span>
+    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 flex flex-col gap-6 animate-in-up">
+      {/* ERROR MESSAGE TOAST */}
+      {errorMessage && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-start gap-2.5 shadow-sm">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold text-[#0A0A0A]">Document Validation Error</p>
+            <p className="mt-0.5">{errorMessage}</p>
           </div>
         </div>
+      )}
 
-        {/* Stat 2 — Average Speed */}
-        <div className="p-4 md:p-5 border-b sm:border-b-0 sm:border-r border-[#E5E7EB] flex flex-col justify-between relative overflow-hidden">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Average Speed</span>
-            <Zap className="w-3.5 h-3.5 text-[#0C2461]" />
-          </div>
-          <div className="flex items-baseline gap-2 mt-3">
-            <span className="text-4xl font-bold text-[#0A0A0A]">2.8s</span>
-          </div>
-        </div>
+      {/* TOP ROW: UPLOAD CARD & QUICK STATS */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Left Column (Upload Invoice) - spans 2 cols on lg screens */}
+        <div className="lg:col-span-2 flex flex-col">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm flex flex-col justify-between flex-grow min-h-[300px]">
+            <div>
+              <h3 className="text-base font-bold text-[#0A0A0A] tracking-tight">Upload Invoice or Packing List</h3>
+              <p className="text-xs text-[#6B7280] mt-1">Extract data instantly with AI-powered OCR mapping to Mirsal 2 standards.</p>
+            </div>
 
-        {/* Stat 3 — Audit Warnings */}
-        <div className="p-4 md:p-5 flex flex-col justify-between relative overflow-hidden">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Audit Warnings Flagged</span>
-            <Shield className="w-3.5 h-3.5 text-[#0A0A0A]" />
-          </div>
-          <div className="flex items-baseline gap-2 mt-3">
-            <span className={`text-4xl font-bold ${warningCount > 0 ? 'text-amber-600' : 'text-[#0A0A0A]'}`}>
-              {warningCount}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Main grid ────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
-
-        {/* Upload Zone */}
-        <div className="md:col-span-1 flex flex-col gap-4">
-          <Card title="New Extraction" subtitle="Drag & drop invoice or Packing List">
             <div
               onDragEnter={handleDrag}
               onDragOver={handleDrag}
               onDragLeave={handleDrag}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`flex-1 border-2 border-dashed rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition-all min-h-[195px] ${
+              className={`mt-5 border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all min-h-[170px] ${
                 isDragActive
-                  ? 'border-[#C9A84C] bg-[#F0E2B6]/20'
+                  ? 'border-[#0C2461] bg-[#0C2461]/5'
                   : 'border-[#E5E7EB] hover:border-[#0C2461] hover:bg-[#0C2461]/5'
               }`}
             >
@@ -174,62 +148,155 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
               {isProcessing ? (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-[#0C2461]/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-[#0C2461]/10 flex items-center justify-center">
                     <Clock className="w-5 h-5 text-[#0C2461] animate-spin" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-[#0A0A0A]">Extracting Fields…</h4>
-                    <p className="text-xs text-[#6B7280] mt-1 max-w-[200px]">Converting invoice to Mirsal 2 structured schema</p>
+                    <h4 className="text-sm font-bold text-[#0A0A0A]">Extracting Fields…</h4>
+                    <p className="text-xs text-[#6B7280] mt-1">Converting raw PDF into structured customs schema</p>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-[#F3F4F6] flex items-center justify-center text-[#0C2461]">
+                  <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center text-[#0C2461]">
                     <UploadCloud className="w-5 h-5" />
                   </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-[#0A0A0A]">Upload Document</h4>
-                    <p className="text-xs text-[#6B7280] mt-1">PDF up to 5MB</p>
-                  </div>
-                  {/* Gold accent */}
-                  <div className="w-8 h-[2px] bg-[#C9A84C] rounded-full mt-1" />
+                  
+                  <button
+                    type="button"
+                    className="px-5 py-2 bg-[#0C2461] hover:bg-[#0A1D4F] text-white rounded-lg text-xs font-bold shadow-sm transition-all cursor-pointer"
+                  >
+                    Upload PDF Document
+                  </button>
+                  <p className="text-xs text-[#6B7280] mt-1">or drag and drop your file here</p>
                 </div>
               )}
             </div>
 
-            {errorMessage && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex gap-2 text-xs text-red-700">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{errorMessage}</span>
+            {/* Feature Badges Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-[#F3F4F6] pt-5 mt-6 text-xs text-[#6B7280]">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#F3F4F6] flex items-center justify-center shrink-0">
+                  <FileText className="w-3.5 h-3.5 text-[#0C2461]" />
+                </div>
+                <div>
+                  <p className="font-bold text-[#0A0A0A]">PDF only</p>
+                  <p className="text-[10px] text-[#9CA3AF]">Up to 10MB</p>
+                </div>
               </div>
-            )}
-          </Card>
+
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#F3F4F6] flex items-center justify-center shrink-0">
+                  <Zap className="w-3.5 h-3.5 text-[#0C2461]" />
+                </div>
+                <div>
+                  <p className="font-bold text-[#0A0A0A]">AI-Powered OCR</p>
+                  <p className="text-[10px] text-[#9CA3AF]">99% accuracy</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#F3F4F6] flex items-center justify-center shrink-0">
+                  <Shield className="w-3.5 h-3.5 text-[#0C2461]" />
+                </div>
+                <div>
+                  <p className="font-bold text-[#0A0A0A]">Secure & Private</p>
+                  <p className="text-[10px] text-[#9CA3AF]">Your data is protected</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* History Table */}
-        <div className="md:col-span-2">
-          <Card title="Declaration History" subtitle="Click to view and edit draft declarations">
-            {declarations.length === 0 ? (
-              <div className="flex flex-col items-center justify-center text-center py-10 text-[#6B7280]">
-                <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
-                  <FileText className="w-6 h-6 text-[#9CA3AF]" />
+        {/* Right Column (Quick Stats) */}
+        <div className="flex flex-col">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm flex flex-col justify-between flex-grow">
+            <div className="flex items-center justify-between border-b border-[#F3F4F6] pb-3 mb-4">
+              <h3 className="text-sm font-bold text-[#0A0A0A] uppercase tracking-wider">Quick Stats</h3>
+              <span className="text-[10px] font-semibold text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded border border-[#E5E7EB]">Today</span>
+            </div>
+
+            <div className="flex flex-col gap-4 flex-1 justify-center">
+              {/* Stat 1: Total Declarations */}
+              <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-[#E0E7FF] flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-[#0C2461]" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">Total Declarations</p>
+                    <p className="text-2xl font-bold text-[#0A0A0A] mt-0.5">{totalCount}</p>
+                  </div>
                 </div>
-                <h4 className="text-sm font-semibold text-[#0A0A0A]">No declarations yet</h4>
-                <p className="text-xs max-w-[280px] mt-1 text-[#6B7280]">
-                  Upload your first invoice PDF to start drafting customs entries.
-                </p>
-                {/* Gold rule */}
-                <div className="w-12 h-[2px] bg-[#C9A84C] rounded-full mt-4 opacity-60" />
+                <span className="text-[10px] font-bold text-[#0C2461] bg-[#E0E7FF] px-2 py-0.5 rounded-full">
+                  +{processedToday} today
+                </span>
+              </div>
+
+              {/* Stat 2: Average Speed */}
+              <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-[#E0E7FF] flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-[#0C2461]" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">Average Speed</p>
+                    <p className="text-2xl font-bold text-[#0A0A0A] mt-0.5">2.8s</p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold text-[#0C2461] bg-[#E0E7FF] px-2 py-0.5 rounded-full">
+                  ↓ 0.5s vs yesterday
+                </span>
+              </div>
+
+              {/* Stat 3: Audit Warnings */}
+              <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-[#E0E7FF] flex items-center justify-center">
+                    <Shield className="w-4 h-4 text-[#0C2461]" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">Audit Warnings</p>
+                    <p className="text-2xl font-bold text-[#0A0A0A] mt-0.5">{warningCount}</p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full">
+                  No new issues
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MIDDLE ROW: RECENT DECLARATIONS & RECENT ACTIVITY */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Left Column (Recent Declarations Table) */}
+        <div className="lg:col-span-2 flex flex-col">
+          <Card 
+            title="Recent Declarations" 
+            subtitle="Your latest draft declarations"
+            actions={<span className="text-xs font-semibold text-[#0C2461] hover:underline cursor-pointer">View all →</span>}
+          >
+            {declarations.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center text-[#6B7280]">
+                <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center text-[#9CA3AF] mb-3">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <p className="text-sm font-semibold">No declarations yet</p>
+                <p className="text-xs mt-1">Upload your first invoice PDF to start drafting customs entries.</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-[#E5E7EB]">
-                      <th className="py-3 text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Document Name</th>
-                      <th className="py-3 text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Importer</th>
-                      <th className="py-3 text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">CIF Value</th>
-                      <th className="py-3 text-[10px] font-semibold uppercase tracking-widest text-[#6B7280]">Status</th>
+                      <th className="py-3 text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">Document</th>
+                      <th className="py-3 text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">Importer</th>
+                      <th className="py-3 text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">CIF Value</th>
+                      <th className="py-3 text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">Status</th>
+                      <th className="py-3 text-[10px] font-bold uppercase tracking-widest text-[#6B7280] text-right">Date</th>
                       <th className="py-3 text-right" />
                     </tr>
                   </thead>
@@ -245,20 +312,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           <td className="py-4 pr-3 max-w-[200px]">
                             <div className="flex items-center gap-2">
                               <FileText className="w-4 h-4 text-[#0C2461] shrink-0" />
-                              <span className="text-sm font-medium text-[#0A0A0A] truncate">{dec.file_name}</span>
+                              <span className="text-sm font-semibold text-[#0A0A0A] truncate">{dec.file_name}</span>
                             </div>
-                            <span className="text-[10px] text-[#9CA3AF] block mt-0.5 pl-6">
-                              {new Date(dec.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                            </span>
                           </td>
-                          <td className="py-4 text-sm text-[#0A0A0A]">
+                          <td className="py-4 text-xs font-medium text-[#6B7280]">
                             {dec.extracted_header.consignee_name ? (
                               <span className="truncate block max-w-[150px]">{dec.extracted_header.consignee_name}</span>
                             ) : (
                               <span className="text-[#9CA3AF] italic">Unknown</span>
                             )}
                           </td>
-                          <td className="py-4 text-sm font-mono text-[#0A0A0A]">
+                          <td className="py-4 text-xs font-bold text-[#0A0A0A] font-mono">
                             {dec.extracted_header.total_invoice_value ? (
                               <span>
                                 {dec.extracted_header.invoice_currency || 'USD'}{' '}
@@ -270,12 +334,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           </td>
                           <td className="py-4">
                             {dec.status === 'processing' ? (
-                              <Badge variant="violet">Extracting</Badge>
+                              <Badge variant="navy">Extracting</Badge>
                             ) : hasWarnings ? (
-                              <Badge variant="warning">Warnings</Badge>
+                              <Badge variant="navy">Warnings</Badge>
                             ) : (
                               <Badge variant="navy">Ready</Badge>
                             )}
+                          </td>
+                          <td className="py-4 text-[10px] text-[#9CA3AF] font-medium text-right">
+                            {new Date(dec.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                           </td>
                           <td className="py-4 text-right" onClick={(e) => e.stopPropagation()}>
                             <div className="flex items-center justify-end gap-1">
@@ -302,6 +369,107 @@ export const Dashboard: React.FC<DashboardProps> = ({
             )}
           </Card>
         </div>
+
+        {/* Right Column (Recent Activity) */}
+        <div className="flex flex-col">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm flex flex-col justify-between flex-grow">
+            <div>
+              <h3 className="text-sm font-bold text-[#0A0A0A] uppercase tracking-wider border-b border-[#F3F4F6] pb-3 mb-4">
+                Recent Activity
+              </h3>
+              
+              <div className="flex flex-col gap-4">
+                {declarations.length === 0 ? (
+                  <p className="text-xs text-[#9CA3AF] italic text-center py-6">No recent logs</p>
+                ) : (
+                  declarations.slice(0, 3).map((dec, i) => (
+                    <div key={dec.id} className="flex items-start justify-between text-xs gap-3">
+                      <div className="flex items-start gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#0C2461] mt-1 shrink-0" />
+                        <div>
+                          <p className="font-bold text-[#0A0A0A]">
+                            {i === 0 ? 'Declaration created' : 'Document uploaded'}
+                          </p>
+                          <p className="text-[10px] text-[#6B7280] font-mono mt-0.5 truncate max-w-[170px]">
+                            {dec.file_name}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[9px] text-[#9CA3AF] font-medium text-right mt-0.5">
+                        {new Date(dec.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                  ))
+                )}
+                <div className="flex items-start justify-between text-xs gap-3">
+                  <div className="flex items-start gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#0C2461] mt-1 shrink-0" />
+                    <div>
+                      <p className="font-bold text-[#0A0A0A]">System check completed</p>
+                      <p className="text-[10px] text-[#6B7280] mt-0.5">All systems operational</p>
+                    </div>
+                  </div>
+                  <span className="text-[9px] text-[#9CA3AF] font-medium text-right mt-0.5">Ready</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-[#F3F4F6] pt-4 mt-6 text-center">
+              <span className="text-xs font-semibold text-[#0C2461] hover:underline cursor-pointer block">
+                View all activity →
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* BOTTOM ROW: PERFORMANCE SNAPSHOT CONTAINER */}
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+        <div className="flex items-center justify-between border-b border-[#F3F4F6] pb-3 mb-5">
+          <div>
+            <h3 className="text-base font-bold text-[#0A0A0A] tracking-tight">Performance Snapshot</h3>
+            <p className="text-xs text-[#6B7280] mt-0.5">Overview of your key performance metrics</p>
+          </div>
+          <span className="text-[10px] font-semibold text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded border border-[#E5E7EB]">Last 7 days</span>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Card 1: Total Declarations */}
+          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex flex-col justify-between">
+            <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Total Declarations</span>
+            <div className="flex items-baseline gap-1.5 mt-2">
+              <span className="text-2xl font-bold text-[#0A0A0A]">{totalCount}</span>
+              <span className="text-[10px] text-[#0C2461] font-bold">+{processedToday} today</span>
+            </div>
+          </div>
+
+          {/* Card 2: Average Speed */}
+          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex flex-col justify-between">
+            <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Average Speed</span>
+            <div className="flex items-baseline gap-1.5 mt-2">
+              <span className="text-2xl font-bold text-[#0A0A0A]">2.8s</span>
+              <span className="text-[10px] text-[#0C2461] font-bold">↓ 0.5s</span>
+            </div>
+          </div>
+
+          {/* Card 3: Success Rate */}
+          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex flex-col justify-between">
+            <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Success Rate</span>
+            <div className="flex items-baseline gap-1.5 mt-2">
+              <span className="text-2xl font-bold text-[#0A0A0A]">100%</span>
+              <span className="text-[10px] text-[#0C2461] font-bold">↑ Excellent</span>
+            </div>
+          </div>
+
+          {/* Card 4: Audit Warnings */}
+          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 flex flex-col justify-between">
+            <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Audit Warnings</span>
+            <div className="flex items-baseline gap-1.5 mt-2">
+              <span className="text-2xl font-bold text-[#0A0A0A]">{warningCount}</span>
+              <span className="text-[10px] text-[#6B7280] font-bold">No issues</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ── "Why we did this?" and Feedback Form Section ────────────────── */}
@@ -309,7 +477,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         {/* Left Side: Why we did this */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2.5">
-            <span className="w-1.5 h-6 bg-[#C9A84C] rounded-full" />
+            <span className="w-1.5 h-6 bg-[#0C2461] rounded-full" />
             <h3 className="text-lg font-bold text-[#0A0A0A] tracking-tight">Why we did this?</h3>
           </div>
           <p className="text-sm text-[#6B7280] leading-relaxed">

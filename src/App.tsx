@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { db, type Declaration } from './lib/supabase';
-import { DynamicIsland } from './components/Navigation/DynamicIsland';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { EditorContainer } from './components/DeclarationEditor/EditorContainer';
 import { AuthGuard } from './components/Auth/AuthGuard';
+import { 
+  LayoutDashboard, UploadCloud, FileText, Folder, ShieldCheck, 
+  BarChart3, Settings, LogOut, Trash2, Bell, ChevronDown, HelpCircle 
+} from 'lucide-react';
 
 export default function App() {
   return (
@@ -18,11 +21,29 @@ interface MainAppProps {
   onSignOut: () => void;
 }
 
+// Smart Handling SVG Logo Mark
+const SmartHandlingMark: React.FC<{ size?: number }> = ({ size = 28 }) => (
+  <svg width={size} height={size} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="14" cy="14" r="13" stroke="#0C2461" strokeWidth="1.5" />
+    {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => {
+      const rad = (deg * Math.PI) / 180;
+      const x1 = 14 + 11 * Math.cos(rad);
+      const y1 = 14 + 11 * Math.sin(rad);
+      const x2 = 14 + 12.5 * Math.cos(rad);
+      const y2 = 14 + 12.5 * Math.sin(rad);
+      return <line key={deg} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#0C2461" strokeWidth="1" strokeLinecap="round" />;
+    })}
+    <text x="14" y="18" textAnchor="middle" fontFamily="Inter, sans-serif" fontWeight="700" fontSize="9" fill="#0C2461">SH</text>
+  </svg>
+);
+
 function MainApp({ user, onSignOut }: MainAppProps) {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'editor'>('dashboard');
   const [declarations, setDeclarations] = useState<Declaration[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Load declarations on mount
   useEffect(() => {
@@ -35,6 +56,17 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       }
     }
     loadData();
+  }, []);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowProfileDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Handle PDF Upload and Extraction calling backend /api/extract
@@ -320,45 +352,190 @@ function MainApp({ user, onSignOut }: MainAppProps) {
   const activeDeclaration = declarations.find(d => d.id === selectedId);
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] text-[#0A0A0A] flex flex-col font-sans">
-      {/* Top gold + navy brand strip */}
-      <div className="h-[2px] bg-gradient-to-r from-[#0C2461] via-[#C9A84C] to-[#0C2461]" />
+    <div className="flex h-screen bg-[#F3F4F6] text-[#0A0A0A] font-sans overflow-hidden">
+      {/* 1. LEFT SIDEBAR */}
+      <aside className="w-64 bg-white border-r border-[#E5E7EB] flex flex-col shrink-0">
+        {/* Brand/Logo */}
+        <div className="h-16 px-6 border-b border-[#E5E7EB] flex items-center gap-3">
+          <SmartHandlingMark size={28} />
+          <div className="flex flex-col leading-none">
+            <div className="flex items-baseline gap-1">
+              <span className="text-[16px] font-semibold tracking-wide text-[#0A0A0A] italic" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                Smart
+              </span>
+              <span className="text-[9px] font-sans font-extrabold uppercase tracking-[0.2em] text-[#0C2461]">
+                Handling
+              </span>
+            </div>
+            <span className="text-[8px] text-[#C9A84C] uppercase tracking-[0.25em] font-bold mt-1">
+              INTELLIGENT CUSTOMS
+            </span>
+          </div>
+        </div>
 
-      <DynamicIsland
-        activeTab={activeTab}
-        onNavigate={(tab) => {
-          if (tab === 'editor' && !selectedId) return;
-          setActiveTab(tab);
-        }}
-        hasActiveDeclaration={!!selectedId}
-        user={user}
-        onSignOut={onSignOut}
-        onDeleteAccount={handleDeleteAccount}
-      />
+        {/* Navigation links */}
+        <nav className="flex-1 px-4 py-6 flex flex-col gap-1.5 overflow-y-auto">
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              activeTab === 'dashboard'
+                ? 'bg-[#0C2461]/5 text-[#0C2461]'
+                : 'text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6]'
+            }`}
+          >
+            <LayoutDashboard className="w-4 h-4" /> Dashboard
+          </button>
+          
+          <button
+            onClick={() => {
+              if (selectedId) setActiveTab('editor');
+            }}
+            disabled={!selectedId}
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+              activeTab === 'editor'
+                ? 'bg-[#0C2461]/5 text-[#0C2461]'
+                : 'text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6]'
+            }`}
+          >
+            <FileText className="w-4 h-4" /> Editor Workspace
+          </button>
 
-      {/* Main View */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {activeTab === 'dashboard' ? (
-          <Dashboard
-            declarations={declarations}
-            onUpload={handleUpload}
-            onSelect={handleSelectDeclaration}
-            onDelete={handleDeleteDeclaration}
-            isProcessing={isProcessing}
-            userEmail={user?.email}
-          />
-        ) : (
-          activeDeclaration && (
-            <EditorContainer
-              declaration={activeDeclaration}
-              onBack={() => setActiveTab('dashboard')}
-              onSave={handleSaveDeclaration}
-              declarationsList={declarations}
-              onSelectOther={handleSelectDeclaration}
+          <div className="w-full h-px bg-[#E5E7EB] my-3" />
+
+          {/* Placeholder items matching the 2nd picture */}
+          <div className="flex flex-col gap-1">
+            <span className="px-4 text-[10px] uppercase font-bold tracking-wider text-[#9CA3AF] mb-1 block">Customs System</span>
+            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
+              <UploadCloud className="w-4 h-4" /> New Extraction
+            </button>
+            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
+              <Folder className="w-4 h-4" /> Documents
+            </button>
+            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
+              <ShieldCheck className="w-4 h-4" /> Audit & Compliance
+            </button>
+            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
+              <BarChart3 className="w-4 h-4" /> Analytics
+            </button>
+            <button className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] rounded-lg transition-all cursor-pointer">
+              <Settings className="w-4 h-4" /> Settings
+            </button>
+          </div>
+        </nav>
+
+        {/* Support Help box */}
+        <div className="p-4 border-t border-[#E5E7EB]">
+          <div className="bg-[#F3F4F6] rounded-xl p-4 flex flex-col gap-3 border border-[#E5E7EB]">
+            <HelpCircle className="w-5 h-5 text-[#0C2461]" />
+            <div>
+              <p className="text-xs font-bold text-[#0A0A0A]">Need help?</p>
+              <p className="text-[10px] text-[#6B7280] mt-0.5">Our support team is here to help.</p>
+            </div>
+            <a 
+              href="mailto:support@smarthandling.ae" 
+              className="w-full py-2 bg-[#0C2461] hover:bg-[#0A1D4F] text-white text-center rounded-lg text-[10px] font-bold shadow-sm transition-all block cursor-pointer"
+            >
+              Contact Support
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      {/* 2. MAIN CONTAINER AREA */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
+        {/* Top Header */}
+        <header className="h-16 bg-white border-b border-[#E5E7EB] px-6 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm md:text-base font-semibold text-[#0A0A0A] flex items-center gap-1.5">
+              Welcome back, <span className="text-[#0C2461] font-bold">{user.name || user.email || 'User'}</span>! 👋
+            </h2>
+            <span className="hidden lg:inline text-xs text-[#6B7280] ml-2">
+              Let's process your documents and keep your customs clearance moving.
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Notification Bell */}
+            <button className="p-1.5 rounded-full hover:bg-[#F3F4F6] text-[#6B7280] hover:text-[#0A0A0A] transition-all relative cursor-pointer">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-[#0C2461] rounded-full border border-white" />
+            </button>
+
+            {/* Profile trigger */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-[#E5E7EB] hover:border-[#0A0A0A] bg-white transition-all cursor-pointer"
+              >
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name || 'User'} className="w-6 h-6 rounded-full object-cover" />
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-[#0C2461] flex items-center justify-center text-white text-[10px] font-bold">
+                    {(user.name || user.email || 'U')[0].toUpperCase()}
+                  </div>
+                )}
+                <span className="text-[11px] text-[#6B7280] font-semibold max-w-[100px] truncate hidden sm:block">
+                  {user.name || user.email}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] transition-transform ${showProfileDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
+              {showProfileDropdown && (
+                <div className="absolute right-0 top-10 mt-1 w-44 bg-white border border-[#E5E7EB] rounded-xl shadow-lg py-1 z-50">
+                  <div className="px-3 py-1.5 border-b border-[#F3F4F6] mb-1">
+                    <p className="text-[11px] font-semibold text-[#0A0A0A] truncate">{user.name || 'User'}</p>
+                    <p className="text-[9px] text-[#6B7280] truncate">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowProfileDropdown(false);
+                      onSignOut();
+                    }}
+                    className="w-full flex items-center gap-2 text-left px-3 py-1.5 text-xs font-semibold text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F3F4F6] transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" /> Sign Out
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowProfileDropdown(false);
+                      if (confirm("Are you sure you want to delete your account? This will permanently erase all your customs declarations and history.")) {
+                        handleDeleteAccount();
+                      }
+                    }}
+                    className="w-full flex items-center gap-2 text-left px-3 py-1.5 text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> Delete Account
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Content Box container */}
+        <main className="flex-1 overflow-y-auto min-w-0">
+          {activeTab === 'dashboard' ? (
+            <Dashboard
+              declarations={declarations}
+              onUpload={handleUpload}
+              onSelect={handleSelectDeclaration}
+              onDelete={handleDeleteDeclaration}
+              isProcessing={isProcessing}
+              userEmail={user?.email}
             />
-          )
-        )}
-      </main>
+          ) : (
+            activeDeclaration && (
+              <EditorContainer
+                declaration={activeDeclaration}
+                onBack={() => setActiveTab('dashboard')}
+                onSave={handleSaveDeclaration}
+                declarationsList={declarations}
+                onSelectOther={handleSelectDeclaration}
+              />
+            )
+          )}
+        </main>
+      </div>
     </div>
   );
 }
