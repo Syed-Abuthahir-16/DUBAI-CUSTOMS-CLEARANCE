@@ -346,8 +346,8 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
           
           {/* PDF Viewer (Left half) - Visible on lg screens, OR when activeTab is 'pdf' */}
           <div className={`${
-            activeTab === 'pdf' ? 'flex w-full' : 'hidden lg:flex lg:w-[50%]'
-          } border-r border-[#E5E7EB] bg-[#F3F4F6]/60 flex-col p-4`}>
+            activeTab === 'pdf' ? 'flex w-full max-w-4xl mx-auto' : 'hidden lg:flex lg:w-[50%]'
+          } border-r border-[#E5E7EB] bg-[#F3F4F6]/60 flex-col p-4 h-full flex-1 min-h-0`}>
             <div className="w-full h-full bg-white border border-[#E5E7EB] rounded-lg shadow-sm flex flex-col relative overflow-hidden">
               <div className="h-10 bg-[#F7F7F7] border-b border-[#E5E7EB] px-4 flex items-center justify-between shrink-0">
                 <span className="text-xs font-semibold text-[#6B7280] truncate">{declaration.file_name}</span>
