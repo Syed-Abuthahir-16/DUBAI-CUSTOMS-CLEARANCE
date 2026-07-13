@@ -546,6 +546,8 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     onCopy={handleCopy}
                   />
                 </div>
+                {/* Scroll Spacer */}
+                <div className="h-16 shrink-0" />
               </div>
             ) : (
               <div className="w-full flex flex-col gap-4 animate-in-up">
@@ -707,6 +709,8 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                     </table>
                   </div>
                 </div>
+                {/* Scroll Spacer */}
+                <div className="h-16 shrink-0" />
               </div>
             )}
           </div>
