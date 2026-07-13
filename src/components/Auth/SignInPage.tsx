@@ -1,40 +1,76 @@
 import React, { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 
-// Smart Handling full logo for sign-in page
-const SmartHandlingLogo: React.FC = () => (
+// ClearPort AI logo for sign-in page
+const ClearPortLogo: React.FC = () => (
   <div className="flex flex-col items-center gap-3">
-    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Outer gold ring */}
-      <circle cx="36" cy="36" r="33" stroke="#C9A84C" strokeWidth="2" />
-      {/* Inner navy ring */}
-      <circle cx="36" cy="36" r="28" stroke="#0C2461" strokeWidth="0.5" strokeDasharray="3 3" />
-      {/* Tick marks */}
-      {[0,30,60,90,120,150,180,210,240,270,300,330].map((deg) => {
-        const rad = (deg * Math.PI) / 180;
-        const x1 = 36 + 30 * Math.cos(rad);
-        const y1 = 36 + 30 * Math.sin(rad);
-        const len = deg % 90 === 0 ? 4 : 2;
-        const x2 = 36 + (30 + len) * Math.cos(rad);
-        const y2 = 36 + (30 + len) * Math.sin(rad);
-        return <line key={deg} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#C9A84C" strokeWidth={deg % 90 === 0 ? 1.5 : 1} strokeLinecap="round" />;
-      })}
-      {/* SH lettermark */}
-      <circle cx="36" cy="36" r="24" fill="white" opacity="0.1" />
-      <text x="36" y="44" textAnchor="middle" fontFamily="Inter, sans-serif" fontWeight="800" fontSize="24" fill="#C9A84C" letterSpacing="-1">SH</text>
+    <svg width="84" height="84" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Crescent/Arc */}
+      <path 
+        d="M38 78C21.5 68.5 19 46.5 32 30C46.5 11.5 73.5 16 82.5 35" 
+        stroke="#C9A84C" 
+        strokeWidth="4" 
+        strokeLinecap="round" 
+      />
+      
+      {/* Container Ship Hull */}
+      <path 
+        d="M26 62.5C28 65 31.5 67 36.5 68C43.5 69.5 59.5 70.5 76 66.5L82 60L54 53.5L34 56.5L26 62.5Z" 
+        fill="#C9A84C" 
+      />
+      <path 
+        d="M23 60C32.5 71 52.5 73 72.5 66.5C76 65.5 83 62 85 59L82.5 56.5C75 59.5 68.5 60.5 53 58C36.5 55.5 25 58 23 60Z" 
+        fill="#C9A84C" 
+      />
+      
+      {/* Containers Block */}
+      {/* Row 1 */}
+      <rect x="36" y="47" width="8" height="6" rx="1" fill="#C9A84C" />
+      <rect x="45" y="45.5" width="8" height="6" rx="1" fill="#C9A84C" />
+      <rect x="54" y="44" width="8" height="6" rx="1" fill="#C9A84C" />
+      <rect x="63" y="42.5" width="8" height="6" rx="1" fill="#C9A84C" />
+      <rect x="72" y="41" width="8" height="6" rx="1" fill="#C9A84C" />
+      {/* Row 2 */}
+      <rect x="39" y="40.5" width="8" height="6" rx="1" fill="#C9A84C" />
+      <rect x="48" y="39" width="8" height="6" rx="1" fill="#C9A84C" />
+      <rect x="57" y="37.5" width="8" height="6" rx="1" fill="#C9A84C" />
+      <rect x="66" y="36" width="8" height="6" rx="1" fill="#C9A84C" />
+      {/* Row 3 */}
+      <rect x="42" y="34" width="8" height="6" rx="1" fill="#C9A84C" />
+      <rect x="51" y="32.5" width="8" height="6" rx="1" fill="#C9A84C" />
+      <rect x="60" y="31" width="8" height="6" rx="1" fill="#C9A84C" />
+      
+      {/* Bridge / Superstructure */}
+      <path d="M30 46H34V54H30V46Z" fill="#C9A84C" />
+      <path d="M28 49H31V53H28V49Z" fill="#C9A84C" />
+      <path d="M32 43H34V46H32V43Z" fill="#C9A84C" />
+
+      {/* Waves */}
+      <path 
+        d="M23 74C32 71.5 39 74.5 48.5 76C59 77.5 70.5 75.5 81.5 70" 
+        stroke="#C9A84C" 
+        strokeWidth="3.5" 
+        strokeLinecap="round" 
+      />
+      <path 
+        d="M29 80C39.5 77 48.5 80.5 59.5 81.5C70 82.5 81 78.5 90 73.5" 
+        stroke="#C9A84C" 
+        strokeWidth="2.5" 
+        strokeLinecap="round" 
+      />
     </svg>
     <div className="text-center flex flex-col items-center">
-      <div className="flex items-baseline gap-2 justify-center">
-        <span className="text-3xl font-semibold italic text-white tracking-wide" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-          Smart
+      <div className="flex items-baseline gap-1.5 justify-center">
+        <span className="text-3xl font-bold tracking-tight text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
+          ClearPort
         </span>
-        <span className="text-[14px] font-sans font-extrabold uppercase tracking-[0.25em] text-[#C9A84C]">
-          Handling
+        <span className="text-3xl font-light text-[#C9A84C]" style={{ fontFamily: "'Inter', sans-serif" }}>
+          AI
         </span>
       </div>
       <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent my-3" />
       <p className="text-[10px] uppercase tracking-[0.25em] text-[#F3F4F6]/80 font-bold">
-        Intelligent Customs Declaration
+        AI-Powered Customs Intelligence
       </p>
     </div>
   </div>
@@ -99,7 +135,7 @@ export const SignInPage: React.FC<SignInPageProps> = () => {
           
           {/* Card header — navy bg */}
           <div className="bg-[#0C2461] px-8 pt-12 pb-10 flex flex-col items-center gap-6">
-            <SmartHandlingLogo />
+            <ClearPortLogo />
           </div>
 
           {/* Card body */}

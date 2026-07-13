@@ -76,7 +76,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
       <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-4">
         <div className="h-1 w-full absolute top-0 bg-gradient-to-r from-[#0C2461] via-[#C9A84C] to-[#0C2461]" />
         <div className="w-10 h-10 rounded-full border-2 border-[#0C2461] border-t-[#C9A84C] animate-spin" />
-        <span className="text-sm text-[#6B7280]">Loading Smart Handling…</span>
+        <span className="text-sm text-[#6B7280]">Loading ClearPort AI…</span>
       </div>
     );
   }

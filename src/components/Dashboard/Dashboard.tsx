@@ -12,6 +12,7 @@ interface DashboardProps {
   onDelete: (id: string) => Promise<void>;
   isProcessing: boolean;
   userEmail?: string | null;
+  userName?: string | null;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -20,7 +21,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
   onSelect,
   onDelete,
   isProcessing,
-  userEmail
+  userEmail,
+  userName
 }) => {
   const [isDragActive, setIsDragActive] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -108,6 +110,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 flex flex-col gap-6 animate-in-up">
+      {/* Mobile-only Welcome greeting (appears only on phone screens) */}
+      <div className="md:hidden">
+        <h2 className="text-sm font-semibold text-[#6B7280]">
+          Welcome back, <span className="text-[#0C2461] font-bold">{userName || userEmail?.split('@')[0] || 'Syed Abuthahir'}</span>! 👋
+        </h2>
+      </div>
+
       {/* ERROR MESSAGE TOAST */}
       {errorMessage && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-start gap-2.5 shadow-sm">
@@ -494,7 +503,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <h3 className="text-lg font-bold text-[#0A0A0A] tracking-tight">Why we did this?</h3>
           </div>
           <p className="text-sm text-[#6B7280] leading-relaxed">
-            Smart Handling was built to solve the tedious, manual customs clearance process. By leveraging AI-powered OCR, we parse complicated shipping documents (Commercial Invoices, Packing Lists, Bills of Lading) and map them directly into structured Mirsal 2 customs drafts in just <strong>2.8 seconds</strong>. 
+            ClearPort AI was built to solve the tedious, manual customs clearance process. By leveraging AI-powered OCR, we parse complicated shipping documents (Commercial Invoices, Packing Lists, Bills of Lading) and map them directly into structured Mirsal 2 customs drafts in just <strong>2.8 seconds</strong>. 
           </p>
           <p className="text-sm text-[#6B7280] leading-relaxed">
             Our built-in audit runner automatically flags calculation mismatches, pricing anomalies, and incorrect Incoterms before submission, preventing costly compliance errors and fines.
@@ -543,11 +552,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* ── Footer ─────────────────────────────────────────────────────── */}
       <footer className="mt-12 pt-6 border-t border-[#E5E7EB] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#9CA3AF] pb-8">
         <div>
-          <p className="font-semibold text-[#6B7280]">Smart Handling</p>
-          <p className="mt-1">© 2026 Smart Handling. All rights reserved.</p>
+          <p className="font-semibold text-[#6B7280]">ClearPort AI</p>
+          <p className="mt-1">© 2026 ClearPort AI. All rights reserved.</p>
         </div>
         <div className="flex items-center gap-6">
-          <a href="mailto:support@smarthandling.ae" className="hover:text-[#0C2461] transition-colors">
+          <a href="mailto:support@clearport.ai" className="hover:text-[#0C2461] transition-colors">
             Contact Support
           </a>
           <span>•</span>

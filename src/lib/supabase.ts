@@ -74,7 +74,7 @@ export interface Declaration {
 }
 
 // LocalStorage mock implementation — starts empty for every new user/browser
-const MOCK_STORAGE_KEY = 'smart_handling_declarations';
+const MOCK_STORAGE_KEY = 'clearport_ai_declarations';
 
 // Database helper functions
 export const db = {
