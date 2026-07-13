@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  ChevronLeft, ChevronRight, Copy, Check, FileText, AlertTriangle, 
+  ChevronLeft, Copy, Check, FileText, AlertTriangle, 
   Trash2, Plus, Download, FileCode, CheckCircle, Save
 } from 'lucide-react';
 import { Button, Input, Badge } from '../ui';
@@ -62,9 +62,6 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
   declarationsList,
   onSelectOther
 }) => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    return typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
-  });
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'pdf' | 'header' | 'items'>(() => {
     return typeof window !== 'undefined' && window.innerWidth < 1024 ? 'pdf' : 'header';
@@ -242,149 +239,77 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
   return (
     <div className="flex-1 flex overflow-hidden bg-background">
       
-      {/* 1. COLLAPSIBLE SIDEBAR (LEFT) */}
-      <div 
-        className={`bg-white border-r border-[#E5E7EB] flex flex-col transition-sidebar relative z-30 shrink-0 ${
-          sidebarCollapsed ? 'w-[60px]' : 'w-[420px]'
-        }`}
-      >
-        {/* Toggle Button */}
-        <button 
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="absolute -right-3 top-4 w-6 h-6 rounded-full border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:text-[#0A0A0A] shadow-sm hover:scale-105 z-40 transition-all cursor-pointer"
-        >
-          {sidebarCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
-        </button>
-
-        {sidebarCollapsed ? (
-          <div className="flex flex-col items-center py-6 gap-6">
-            <button onClick={onBack} className="p-2 rounded-full hover:bg-[#F3F4F6] text-[#6B7280] hover:text-[#0A0A0A]" title="Back">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <div className="w-px h-6 bg-[#E5E7EB]" />
-            <FileText className="w-5 h-5" style={{color: NAVY}} />
-            {declaration.warnings.length > 0 && (
-              <Badge variant="warning" className="w-5 h-5 flex items-center justify-center p-0 text-[10px]">
-                {declaration.warnings.length}
-              </Badge>
-            )}
-          </div>
-        ) : (
-          <div className="flex-1 flex flex-col overflow-hidden p-6 gap-6">
-            
-            {/* Header info */}
-            <div className="flex items-center justify-between">
-              <button 
-                onClick={onBack}
-                className="flex items-center gap-1.5 text-xs font-semibold text-[#6B7280] hover:text-[#0A0A0A] transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" /> Back to Dashboard
-              </button>
-              <Badge variant={declaration.status === 'modified' ? 'violet' : 'success'}>
-                {declaration.status.toUpperCase()}
-              </Badge>
-            </div>
-
-            {/* Document Details Card */}
-            <div className="bg-[#F7F7F7] border border-[#E5E7EB] rounded-xl p-4 flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center" style={{color: NAVY}}>
-                  <FileText className="w-5 h-5" />
-                </div>
-                <div className="overflow-hidden">
-                  <h4 className="text-sm font-semibold text-[#0A0A0A] truncate" title={declaration.file_name}>
-                    {declaration.file_name}
-                  </h4>
-                  <p className="text-[10px] text-[#9CA3AF] mt-0.5">Uploaded {new Date(declaration.created_at).toLocaleTimeString()}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* RLS Warnings Panel */}
-            <div className="flex-1 flex flex-col min-h-0">
-              <h5 className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary mb-3 flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5" style={{color: GOLD}} /> Audit Warnings ({declaration.warnings.length})
-              </h5>
-
-              {declaration.warnings.length === 0 ? (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex gap-3 text-xs text-green-700">
-                  <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-green-600" />
-                  <div>
-                    <span className="font-semibold block font-mono">Declaration Validated</span>
-                    No calculation mismatches, pricing anomalies, or invalid delivery term details flagged by our audit runner.
-                  </div>
-                </div>
-              ) : (
-                <div className="flex-1 overflow-y-auto flex flex-col gap-2.5 pr-1">
-                  {declaration.warnings.map((warn, index) => (
-                    <div key={index} className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 flex gap-3 text-xs text-amber-700">
-                      <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
-                      <span>{warn}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Quick Switch Switcher */}
-            <div className="border-t border-[#E5E7EB] pt-4">
-              <h6 className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] mb-2">Switch Draft</h6>
-              <div className="flex flex-col gap-1.5 max-h-[140px] overflow-y-auto">
-                {declarationsList.filter(d => d.id !== declaration.id).slice(0, 3).map(d => (
-                  <button 
-                    key={d.id}
-                    onClick={() => onSelectOther(d.id)}
-                    className="w-full text-left text-xs p-2 rounded-lg hover:bg-[#F7F7F7] border border-transparent hover:border-[#E5E7EB] text-[#6B7280] hover:text-[#0A0A0A] transition-all truncate"
-                  >
-                    {d.file_name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* 2. MAIN REVIEW CANVAS (RIGHT) */}
+      {/* MAIN REVIEW CANVAS */}
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Workspace Toolbar */}
-        <div className="min-h-14 border-b border-[#E5E7EB] px-4 md:px-6 py-2.5 md:py-0 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0 bg-white sticky top-0 z-20">
-          <div className="flex items-center gap-1 bg-[#F3F4F6] p-1 rounded-lg border border-[#E5E7EB] w-full md:w-auto overflow-x-auto select-none no-scrollbar">
-            <button
-              onClick={() => setActiveTab('pdf')}
-              className={`px-2.5 md:px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
-                activeTab === 'pdf' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
-              }`}
+        <div className="min-h-14 border-b border-[#E5E7EB] px-4 md:px-6 py-2.5 md:py-0 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0 bg-white sticky top-0 z-20 shrink-0">
+          <div className="flex items-center gap-2.5 w-full md:w-auto">
+            {/* Back button */}
+            <button 
+              onClick={onBack}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#E5E7EB] bg-white text-xs font-bold text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F9FAFB] transition-all cursor-pointer shrink-0 shadow-sm"
+              title="Back to Dashboard"
             >
-              <span className="hidden sm:inline">1. PDF Document</span>
-              <span className="inline sm:hidden">1. PDF</span>
+              <ChevronLeft className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Back</span>
             </button>
-            <button
-              onClick={() => setActiveTab('header')}
-              className={`px-2.5 md:px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
-                activeTab === 'header' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
-              }`}
-            >
-              <span className="hidden sm:inline">2. Declaration Header</span>
-              <span className="inline sm:hidden">2. Header</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('items')}
-              className={`px-2.5 md:px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
-                activeTab === 'items' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
-              }`}
-            >
-              <span className="hidden sm:inline">3. Line Items ({items.length})</span>
-              <span className="inline sm:hidden">3. Items ({items.length})</span>
-            </button>
+
+            {/* Status Badge */}
+            <Badge variant={declaration.status === 'modified' ? 'violet' : 'success'} className="shrink-0 text-[10px] hidden sm:inline-flex">
+              {declaration.status.toUpperCase()}
+            </Badge>
+            
+            <div className="flex items-center gap-0.5 bg-[#F3F4F6] p-1 rounded-lg border border-[#E5E7EB] overflow-x-auto select-none no-scrollbar shrink-0">
+              <button
+                onClick={() => setActiveTab('pdf')}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                  activeTab === 'pdf' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
+                }`}
+              >
+                <span className="hidden sm:inline">1. PDF Document</span>
+                <span className="inline sm:hidden">1. PDF</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('header')}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                  activeTab === 'header' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
+                }`}
+              >
+                <span className="hidden sm:inline">2. Declaration Header</span>
+                <span className="inline sm:hidden">2. Header</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('items')}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                  activeTab === 'items' ? 'bg-white text-[#0A0A0A] shadow-sm' : 'text-[#6B7280] hover:text-[#0A0A0A]'
+                }`}
+              >
+                <span className="hidden sm:inline">3. Line Items ({items.length})</span>
+                <span className="inline sm:hidden">3. Items ({items.length})</span>
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+          <div className="flex items-center gap-2 w-full md:w-auto justify-end overflow-x-auto no-scrollbar">
             {showSavedFeedback && (
-              <span className="text-xs text-green-600 font-semibold font-mono flex items-center gap-1 mr-1">
+              <span className="text-xs text-green-600 font-semibold font-mono flex items-center gap-1 mr-1 shrink-0">
                 <Check className="w-3.5 h-3.5" /> Changes saved
               </span>
+            )}
+
+            {/* Switch Draft Dropdown */}
+            {declarationsList.length > 1 && (
+              <select
+                onChange={(e) => onSelectOther(e.target.value)}
+                value={declaration.id}
+                className="text-xs bg-white border border-[#E5E7EB] rounded-lg px-2 py-1 text-[#6B7280] hover:text-[#0A0A0A] outline-none transition-all cursor-pointer shrink-0 max-w-[140px] truncate shadow-sm font-semibold"
+              >
+                {declarationsList.map(d => (
+                  <option key={d.id} value={d.id}>
+                    {d.file_name}
+                  </option>
+                ))}
+              </select>
             )}
             
             <Button 
@@ -392,7 +317,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
               size="sm" 
               onClick={handleLocalSave}
               disabled={isSaving}
-              className="gap-1.5 text-[11px] md:text-xs px-2.5 md:px-3 py-1"
+              className="gap-1.5 text-[11px] md:text-xs px-2.5 py-1 shrink-0 font-bold"
             >
               <Save className="w-3.5 h-3.5" /> Save
             </Button>
@@ -401,7 +326,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
               variant="secondary" 
               size="sm" 
               onClick={handleExportCSV} 
-              className="gap-1.5 text-[11px] md:text-xs px-2.5 md:px-3 py-1"
+              className="gap-1.5 text-[11px] md:text-xs px-2.5 py-1 shrink-0 font-bold"
             >
               <Download className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Export CSV</span><span className="inline sm:hidden">CSV</span>
             </Button>
@@ -409,7 +334,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
               variant="gold" 
               size="sm" 
               onClick={handleExportXML} 
-              className="gap-1.5 text-[11px] md:text-xs px-2.5 md:px-3 py-1"
+              className="gap-1.5 text-[11px] md:text-xs px-2.5 py-1 shrink-0 font-bold"
             >
               <FileCode className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Export XML</span><span className="inline sm:hidden">XML</span>
             </Button>
@@ -421,7 +346,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
           
           {/* PDF Viewer (Left half) - Visible on lg screens, OR when activeTab is 'pdf' */}
           <div className={`${
-            activeTab === 'pdf' ? 'flex w-full' : 'hidden lg:flex lg:w-[45%]'
+            activeTab === 'pdf' ? 'flex w-full' : 'hidden lg:flex lg:w-[50%]'
           } border-r border-[#E5E7EB] bg-[#F3F4F6]/60 flex-col p-4`}>
             <div className="w-full h-full bg-white border border-[#E5E7EB] rounded-lg shadow-sm flex flex-col relative overflow-hidden">
               <div className="h-10 bg-[#F7F7F7] border-b border-[#E5E7EB] px-4 flex items-center justify-between shrink-0">
@@ -455,6 +380,30 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                   <h3 className="text-sm font-semibold uppercase tracking-widest text-[#6B7280]">
                     Customs Declaration Header Fields (Mirsal 2)
                   </h3>
+                </div>
+
+                {/* Audit Warnings */}
+                <div className="w-full">
+                  {declaration.warnings.length === 0 ? (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex gap-3 text-xs text-green-700">
+                      <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-green-600" />
+                      <div>
+                        <span className="font-semibold block font-mono">Declaration Validated</span>
+                        No calculation mismatches, pricing anomalies, or invalid delivery term details flagged by our audit runner.
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 flex flex-col gap-2 text-xs text-amber-700">
+                      <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-[10px] text-amber-800">
+                        <AlertTriangle className="w-4 h-4" /> Audit Warnings ({declaration.warnings.length})
+                      </div>
+                      <div className="flex flex-col gap-1.5 pl-6 list-disc">
+                        {declaration.warnings.map((warn, index) => (
+                          <div key={index} className="leading-relaxed">{warn}</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
@@ -610,6 +559,30 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
                   <Button variant="outline" size="sm" onClick={handleAddItem} className="gap-1 text-xs">
                     <Plus className="w-4 h-4" /> Add Row
                   </Button>
+                </div>
+                
+                {/* Audit Warnings */}
+                <div className="w-full">
+                  {declaration.warnings.length === 0 ? (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex gap-3 text-xs text-green-700">
+                      <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-green-600" />
+                      <div>
+                        <span className="font-semibold block font-mono">Declaration Validated</span>
+                        No calculation mismatches, pricing anomalies, or invalid delivery term details flagged by our audit runner.
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 flex flex-col gap-2 text-xs text-amber-700">
+                      <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-[10px] text-amber-800">
+                        <AlertTriangle className="w-4 h-4" /> Audit Warnings ({declaration.warnings.length})
+                      </div>
+                      <div className="flex flex-col gap-1.5 pl-6 list-disc">
+                        {declaration.warnings.map((warn, index) => (
+                          <div key={index} className="leading-relaxed">{warn}</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 {/* Spreadsheet grid */}

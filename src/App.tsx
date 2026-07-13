@@ -364,7 +364,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
   return (
     <div className="flex h-screen bg-[#F3F4F6] text-[#0A0A0A] font-sans overflow-hidden">
       {/* 1. LEFT SIDEBAR */}
-      <aside className="w-64 bg-white border-r border-[#E5E7EB] flex flex-col shrink-0">
+      <aside className="hidden md:flex w-64 bg-white border-r border-[#E5E7EB] flex-col shrink-0">
         {/* Brand/Logo */}
         <div className="h-16 px-6 border-b border-[#E5E7EB] flex items-center gap-3">
           <SmartHandlingMark size={28} />
@@ -461,12 +461,15 @@ function MainApp({ user, onSignOut }: MainAppProps) {
         {/* Top Header */}
         <header className="h-16 bg-white border-b border-[#E5E7EB] px-6 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
+            {/* Mobile Brand Logo */}
+            <div className="md:hidden flex items-center gap-1.5 mr-2">
+              <SmartHandlingMark size={20} />
+              <span className="text-xs font-bold italic" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Smart</span>
+              <span className="text-[7px] font-extrabold uppercase tracking-widest text-[#0C2461]">Handling</span>
+            </div>
             <h2 className="text-sm md:text-base font-semibold text-[#0A0A0A] flex items-center gap-1.5">
               Welcome back, <span className="text-[#0C2461] font-bold">{user.name || user.email || 'User'}</span>! 👋
             </h2>
-            <span className="hidden lg:inline text-xs text-[#6B7280] ml-2">
-              Let's process your documents and keep your customs clearance moving.
-            </span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -528,7 +531,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
         </header>
 
         {/* Content Box container */}
-        <main className="flex-1 overflow-y-auto min-w-0">
+        <main className={`flex-1 min-w-0 pb-16 md:pb-0 ${activeTab === 'editor' ? 'overflow-hidden' : 'overflow-y-auto'}`}>
           {activeTab === 'dashboard' && (
             <Dashboard
               declarations={declarations}
@@ -563,6 +566,37 @@ function MainApp({ user, onSignOut }: MainAppProps) {
             />
           )}
         </main>
+
+        {/* Mobile Bottom Navigation (only visible on mobile/tablet) */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-[#E5E7EB] flex items-center justify-around px-4 z-50 shadow-lg select-none">
+          <button 
+            onClick={() => setActiveTab('dashboard')}
+            className={`flex flex-col items-center gap-1 text-[10px] font-bold transition-all cursor-pointer ${
+              activeTab === 'dashboard' ? 'text-[#0C2461]' : 'text-[#6B7280]'
+            }`}
+          >
+            <LayoutDashboard className="w-5 h-5" />
+            <span>Dashboard</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('documents')}
+            className={`flex flex-col items-center gap-1 text-[10px] font-bold transition-all cursor-pointer ${
+              activeTab === 'documents' ? 'text-[#0C2461]' : 'text-[#6B7280]'
+            }`}
+          >
+            <Folder className="w-5 h-5" />
+            <span>Documents</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('settings')}
+            className={`flex flex-col items-center gap-1 text-[10px] font-bold transition-all cursor-pointer ${
+              activeTab === 'settings' ? 'text-[#0C2461]' : 'text-[#6B7280]'
+            }`}
+          >
+            <Settings className="w-5 h-5" />
+            <span>Settings</span>
+          </button>
+        </div>
       </div>
     </div>
   );
