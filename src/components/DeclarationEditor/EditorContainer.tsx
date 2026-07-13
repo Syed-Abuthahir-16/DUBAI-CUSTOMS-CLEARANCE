@@ -372,7 +372,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
           </div>
 
           {/* Form Editor Panel (Right half) - Hidden on mobile if activeTab is 'pdf' */}
-          <div className={`${activeTab === 'pdf' ? 'hidden' : 'block'} flex-1 overflow-y-auto p-4 md:p-6`}>
+          <div className={`${activeTab === 'pdf' ? 'hidden' : 'block'} flex-1 overflow-y-auto p-4 md:p-6 h-full min-h-0`}>
             {activeTab === 'header' ? (
               <div className="max-w-3xl mx-auto flex flex-col gap-6 animate-in-up">
                 <div className="flex items-center gap-3">
