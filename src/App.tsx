@@ -352,11 +352,12 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       {/* 1. LEFT SIDEBAR */}
       <aside className="hidden md:flex w-64 bg-white border-r border-[#E5E7EB] flex-col shrink-0">
         {/* Brand/Logo */}
-        <div className="h-16 px-4 border-b border-[#E5E7EB] flex items-center justify-start">
+        <div className="h-24 flex items-center justify-start pl-8 bg-white">
           <img 
             src="/logo_app.png" 
             alt="ClearPort AI" 
-            className="h-13 w-auto object-contain"
+            style={{ height: '84px' }}
+            className="w-auto object-contain"
           />
         </div>
 
@@ -424,7 +425,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
               <p className="text-[10px] text-[#6B7280] mt-0.5">Our support team is here to help.</p>
             </div>
             <a 
-              href="mailto:support@smarthandling.ae" 
+              href="mailto:support@clearport.ai" 
               className="w-full py-2 bg-[#0C2461] hover:bg-[#0A1D4F] text-white text-center rounded-lg text-[10px] font-bold shadow-sm transition-all block cursor-pointer"
             >
               Contact Support
@@ -436,7 +437,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       {/* 2. MAIN CONTAINER AREA */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-[#E5E7EB] px-6 flex items-center justify-between shrink-0">
+        <header className="h-24 bg-white border-b border-[#E5E7EB] px-6 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             {/* Mobile Brand Logo */}
             <div className="md:hidden flex items-center mr-2">
