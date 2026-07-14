@@ -344,7 +344,6 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       console.error('Failed to delete account:', err);
     }
   };
-
   const activeDeclaration = declarations.find(d => d.id === selectedId);
 
   return (
@@ -352,7 +351,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       {/* 1. LEFT SIDEBAR */}
       <aside className="hidden md:flex w-64 bg-white border-r border-[#E5E7EB] flex-col shrink-0">
         {/* Brand/Logo */}
-        <div className="h-28 flex items-center justify-start pl-10 bg-white">
+        <div className="h-28 flex items-center justify-start pl-5 bg-white">
           <img 
             src="/logo_app.png" 
             alt="ClearPort AI" 
@@ -437,14 +436,15 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       {/* 2. MAIN CONTAINER AREA */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
         {/* Top Header */}
-        <header className="h-28 bg-white px-6 flex items-center justify-between shrink-0">
+        <header className="h-16 md:h-28 bg-white px-4 md:px-6 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             {/* Mobile Brand Logo */}
-            <div className="md:hidden flex items-center mr-2">
+            <div className="md:hidden flex items-center pl-3">
               <img 
                 src="/logo_app.png" 
                 alt="ClearPort AI" 
-                className="h-8 w-auto object-contain"
+                style={{ height: '48px' }}
+                className="w-auto object-contain"
               />
             </div>
             <h2 className="text-sm md:text-base font-semibold text-[#0A0A0A] hidden md:flex items-center gap-1.5">
