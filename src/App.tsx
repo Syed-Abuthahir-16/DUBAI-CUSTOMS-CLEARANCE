@@ -23,64 +23,7 @@ interface MainAppProps {
   onSignOut: () => void;
 }
 
-// ClearPort AI SVG Logo Mark
-const ClearPortLogoMark: React.FC<{ size?: number; className?: string }> = ({ size = 28, className = '' }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    {/* Crescent/Arc */}
-    <path 
-      d="M38 78C21.5 68.5 19 46.5 32 30C46.5 11.5 73.5 16 82.5 35" 
-      stroke="currentColor" 
-      strokeWidth="4" 
-      strokeLinecap="round" 
-    />
-    
-    {/* Container Ship Hull */}
-    <path 
-      d="M26 62.5C28 65 31.5 67 36.5 68C43.5 69.5 59.5 70.5 76 66.5L82 60L54 53.5L34 56.5L26 62.5Z" 
-      fill="currentColor" 
-    />
-    <path 
-      d="M23 60C32.5 71 52.5 73 72.5 66.5C76 65.5 83 62 85 59L82.5 56.5C75 59.5 68.5 60.5 53 58C36.5 55.5 25 58 23 60Z" 
-      fill="currentColor" 
-    />
-    
-    {/* Containers Block */}
-    {/* Row 1 */}
-    <rect x="36" y="47" width="8" height="6" rx="1" fill="currentColor" />
-    <rect x="45" y="45.5" width="8" height="6" rx="1" fill="currentColor" />
-    <rect x="54" y="44" width="8" height="6" rx="1" fill="currentColor" />
-    <rect x="63" y="42.5" width="8" height="6" rx="1" fill="currentColor" />
-    <rect x="72" y="41" width="8" height="6" rx="1" fill="currentColor" />
-    {/* Row 2 */}
-    <rect x="39" y="40.5" width="8" height="6" rx="1" fill="currentColor" />
-    <rect x="48" y="39" width="8" height="6" rx="1" fill="currentColor" />
-    <rect x="57" y="37.5" width="8" height="6" rx="1" fill="currentColor" />
-    <rect x="66" y="36" width="8" height="6" rx="1" fill="currentColor" />
-    {/* Row 3 */}
-    <rect x="42" y="34" width="8" height="6" rx="1" fill="currentColor" />
-    <rect x="51" y="32.5" width="8" height="6" rx="1" fill="currentColor" />
-    <rect x="60" y="31" width="8" height="6" rx="1" fill="currentColor" />
-    
-    {/* Bridge / Superstructure */}
-    <path d="M30 46H34V54H30V46Z" fill="currentColor" />
-    <path d="M28 49H31V53H28V49Z" fill="currentColor" />
-    <path d="M32 43H34V46H32V43Z" fill="currentColor" />
 
-    {/* Waves */}
-    <path 
-      d="M23 74C32 71.5 39 74.5 48.5 76C59 77.5 70.5 75.5 81.5 70" 
-      stroke="currentColor" 
-      strokeWidth="3.5" 
-      strokeLinecap="round" 
-    />
-    <path 
-      d="M29 80C39.5 77 48.5 80.5 59.5 81.5C70 82.5 81 78.5 90 73.5" 
-      stroke="currentColor" 
-      strokeWidth="2.5" 
-      strokeLinecap="round" 
-    />
-  </svg>
-);
 
 function MainApp({ user, onSignOut }: MainAppProps) {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'editor' | 'documents' | 'settings'>('dashboard');
@@ -409,16 +352,12 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       {/* 1. LEFT SIDEBAR */}
       <aside className="hidden md:flex w-64 bg-white border-r border-[#E5E7EB] flex-col shrink-0">
         {/* Brand/Logo */}
-        <div className="h-16 px-6 border-b border-[#E5E7EB] flex items-center gap-2.5">
-          <ClearPortLogoMark size={32} className="text-[#0C2461]" />
-          <div className="flex items-baseline gap-1">
-            <span className="text-[18px] font-bold tracking-tight text-[#0A0A0A]">
-              ClearPort
-            </span>
-            <span className="text-[18px] font-light text-[#C9A84C]">
-              AI
-            </span>
-          </div>
+        <div className="h-16 px-6 border-b border-[#E5E7EB] flex items-center justify-start">
+          <img 
+            src="/logo_app.png" 
+            alt="ClearPort AI" 
+            className="h-10 w-auto object-contain"
+          />
         </div>
 
         {/* Navigation links */}
@@ -500,10 +439,12 @@ function MainApp({ user, onSignOut }: MainAppProps) {
         <header className="h-16 bg-white border-b border-[#E5E7EB] px-6 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             {/* Mobile Brand Logo */}
-            <div className="md:hidden flex items-center gap-1.5 mr-2">
-              <ClearPortLogoMark size={24} className="text-[#0C2461]" />
-              <span className="text-sm font-bold tracking-tight text-[#0A0A0A]">ClearPort</span>
-              <span className="text-sm font-light text-[#C9A84C]">AI</span>
+            <div className="md:hidden flex items-center mr-2">
+              <img 
+                src="/logo_app.png" 
+                alt="ClearPort AI" 
+                className="h-8 w-auto object-contain"
+              />
             </div>
             <h2 className="text-sm md:text-base font-semibold text-[#0A0A0A] hidden md:flex items-center gap-1.5">
               Welcome back, <span className="text-[#0C2461] font-bold">{user.name || user.email || 'User'}</span>! 👋
