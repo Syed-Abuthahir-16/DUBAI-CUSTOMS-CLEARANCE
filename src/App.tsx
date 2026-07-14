@@ -352,11 +352,11 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       {/* 1. LEFT SIDEBAR */}
       <aside className="hidden md:flex w-64 bg-white border-r border-[#E5E7EB] flex-col shrink-0">
         {/* Brand/Logo */}
-        <div className="h-24 flex items-center justify-start pl-8 bg-white">
+        <div className="h-28 flex items-center justify-start pl-10 bg-white">
           <img 
             src="/logo_app.png" 
             alt="ClearPort AI" 
-            style={{ height: '84px' }}
+            style={{ height: '105px' }}
             className="w-auto object-contain"
           />
         </div>
@@ -437,7 +437,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       {/* 2. MAIN CONTAINER AREA */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
         {/* Top Header */}
-        <header className="h-24 bg-white border-b border-[#E5E7EB] px-6 flex items-center justify-between shrink-0">
+        <header className="h-28 bg-white px-6 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             {/* Mobile Brand Logo */}
             <div className="md:hidden flex items-center mr-2">
