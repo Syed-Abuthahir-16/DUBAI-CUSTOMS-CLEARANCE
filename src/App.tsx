@@ -352,11 +352,11 @@ function MainApp({ user, onSignOut }: MainAppProps) {
       {/* 1. LEFT SIDEBAR */}
       <aside className="hidden md:flex w-64 bg-white border-r border-[#E5E7EB] flex-col shrink-0">
         {/* Brand/Logo */}
-        <div className="h-16 px-6 border-b border-[#E5E7EB] flex items-center justify-start">
+        <div className="h-16 px-4 border-b border-[#E5E7EB] flex items-center justify-start">
           <img 
             src="/logo_app.png" 
             alt="ClearPort AI" 
-            className="h-10 w-auto object-contain"
+            className="h-13 w-auto object-contain"
           />
         </div>
 
